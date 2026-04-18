@@ -2,120 +2,2005 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>UseTrueDeal</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UseTrueDeal - Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+:root {
+  --bg-primary: #0B1120;
+  --bg-secondary: #111827;
+  --bg-card: rgba(255,255,255,0.04);
+  --bg-card-hover: rgba(255,255,255,0.07);
+  --bg-glass: rgba(17,24,39,0.85);
+  --bg-input: rgba(255,255,255,0.06);
+  --border-color: rgba(255,255,255,0.08);
+  --border-hover: rgba(59,130,246,0.4);
+  --text-primary: #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
+  --grad-start: #3B82F6;
+  --grad-end: #22D3ED;
+  --accent: #3B82F6;
+  --accent-glow: rgba(59,130,246,0.25);
+  --sidebar-width: 240px;
+  --header-height: 64px;
+  --cat-cars: #EF4444;
+  --cat-realestate: #10B981;
+  --cat-phones: #3B82F6;
+  --cat-computers: #8B5CF6;
+  --cat-furniture: #F59E0B;
+  --cat-electronics: #06B6D4;
+  --cat-jobs: #EC4899;
+  --cat-services: #84CC16;
+  --cat-freestuff: #22D3ED;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --transition: 0.2s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 body {
-  margin:0;
-  font-family: Arial;
-  background:#0B1120;
-  color:white;
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
 }
 
-header {
-  display:flex;
-  justify-content:space-between;
-  padding:20px 40px;
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+
+/* GRADIENT TEXT */
+.gradient-text {
+  background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.logo {
-  font-size:26px;
-  font-weight:bold;
-  background:linear-gradient(90deg,#3B82F6,#22D3ED);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+/* BUTTONS */
+.btn-gradient {
+  background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.btn-gradient:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-glow); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.btn-ghost:hover { border-color: var(--border-hover); background: rgba(59,130,246,0.08); }
+
+.btn-accent {
+  background: rgba(59,130,246,0.15);
+  color: var(--accent);
+  border: 1px solid rgba(59,130,246,0.3);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.btn-accent:hover { background: rgba(59,130,246,0.25); border-color: var(--accent); }
+
+/* ===========================
+   HEADER
+=========================== */
+#header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--header-height);
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 16px;
 }
 
-.hero {
-  text-align:center;
-  margin-top:80px;
+.header-logo {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  cursor: pointer;
+  flex-shrink: 0;
+  text-decoration: none;
 }
 
-.hero h1 {
-  font-size:40px;
+.header-search {
+  flex: 1;
+  max-width: 520px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.header-search input {
+  width: 100%;
+  height: 38px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.88rem;
+  padding: 0 100px 0 38px;
+  outline: none;
+  transition: var(--transition);
+}
+.header-search input::placeholder { color: var(--text-muted); }
+.header-search input:focus { border-color: var(--border-hover); background: rgba(255,255,255,0.08); }
+.search-icon {
+  position: absolute;
+  left: 11px;
+  color: var(--text-muted);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+.search-btn {
+  position: absolute;
+  right: 4px;
+  height: 30px;
+  padding: 0 14px;
+  font-size: 0.8rem;
 }
 
-.search-box {
-  margin-top:20px;
+.header-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.header-location select {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  outline: none;
+  cursor: pointer;
+  transition: var(--transition);
+  max-width: 160px;
+}
+.header-location select:focus { border-color: var(--border-hover); }
+.header-location select option { background: #1F2937; }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.header-actions button { height: 36px; padding: 0 16px; font-size: 0.85rem; }
+.btn-post { height: 36px; padding: 0 16px; font-size: 0.85rem; }
+
+#mobile-menu-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+#mobile-menu-btn:hover { background: var(--bg-card-hover); }
+
+/* ===========================
+   LAYOUT
+=========================== */
+#layout {
+  display: flex;
+  min-height: calc(100vh - var(--header-height));
+  align-items: flex-start;
 }
 
-.search-box input {
-  width:50%;
-  padding:15px;
-  border-radius:10px;
-  border:none;
+/* ===========================
+   SIDEBAR
+=========================== */
+#sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  position: sticky;
+  top: var(--header-height);
+  height: calc(100vh - var(--header-height));
+  overflow-y: auto;
+  border-right: 1px solid var(--border-color);
+  background: rgba(11,17,32,0.97);
+  padding: 16px 0 24px;
 }
 
-.search-box button {
-  padding:15px 25px;
-  border:none;
-  border-radius:10px;
-  background:linear-gradient(90deg,#3B82F6,#22D3ED);
-  color:white;
-  cursor:pointer;
+.sidebar-section {
+  padding: 0 0 14px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+.sidebar-section:last-child { border-bottom: none; }
+
+.sidebar-section-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 12px 16px 6px;
 }
 
-.cards {
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  margin-top:60px;
+/* Category items */
+.cat-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  user-select: none;
+}
+.cat-item:hover { background: var(--bg-card-hover); }
+.cat-item.active { background: rgba(59,130,246,0.1); }
+.cat-item.active .cat-item-name { color: var(--accent); }
+
+.cat-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cat-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.cat-item-name {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: color var(--transition);
+}
+.cat-arrow {
+  color: var(--text-muted);
+  transition: transform var(--transition);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.cat-arrow.open { transform: rotate(180deg); }
+
+/* Subcategory dropdown */
+.sub-dropdown {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.sub-dropdown.open {
+  max-height: 220px;
+  overflow-y: auto;
 }
 
-.card {
-  background:#1E293B;
-  padding:20px;
-  border-radius:12px;
-  width:200px;
-  transition:0.3s;
+.sub-item {
+  padding: 6px 16px 6px 38px;
+  font-size: 0.81rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sub-item:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+.sub-item.active { color: var(--accent); background: rgba(59,130,246,0.1); font-weight: 600; }
+
+/* Condition filter */
+.condition-list {
+  padding: 4px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.condition-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  transition: var(--transition);
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
+}
+.condition-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.condition-btn.active { background: rgba(59,130,246,0.1); color: var(--accent); font-weight: 600; }
+.condition-radio {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+.condition-btn.active .condition-radio { border-color: var(--accent); background: var(--accent); }
+.condition-radio-inner {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.condition-btn.active .condition-radio-inner { opacity: 1; }
+
+/* Popular searches */
+.popular-tags {
+  padding: 4px 12px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.popular-tag {
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-color);
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.popular-tag:hover { background: rgba(59,130,246,0.12); border-color: var(--border-hover); color: var(--text-primary); }
+
+/* ===========================
+   MAIN CONTENT
+=========================== */
+#main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.card:hover {
-  transform:translateY(-5px);
-  box-shadow:0 0 20px rgba(34,211,238,0.4);
+/* Active filters bar */
+#filters-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-height: 32px;
+}
+#filters-bar.hidden { display: none; }
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(59,130,246,0.12);
+  border: 1px solid rgba(59,130,246,0.3);
+  font-size: 0.77rem;
+  font-weight: 500;
+  color: #60A5FA;
+}
+.filter-chip-x {
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  transition: color var(--transition);
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 400;
+}
+.filter-chip-x:hover { color: #F87171; }
+
+.clear-all-btn {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition);
+}
+.clear-all-btn:hover { color: #F87171; }
+
+/* Results header */
+#results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.results-count {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+.results-count strong { color: var(--text-primary); font-weight: 600; }
+
+/* Listings grid */
+#listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+/* Listing card */
+.listing-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition), border-color var(--transition);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.listing-card:hover {
+  transform: translateY(-3px);
+  background: var(--bg-card-hover);
+  border-color: rgba(59,130,246,0.25);
+  box-shadow: 0 8px 32px rgba(59,130,246,0.12), 0 2px 8px rgba(0,0,0,0.35);
+}
+
+.card-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.cat-badge {
+  font-size: 0.69rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.2px;
+}
+.sub-badge {
+  font-size: 0.68rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+.cond-badge {
+  font-size: 0.67rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-left: auto;
+}
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-desc {
+  font-size: 0.81rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+.card-location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.77rem;
+  color: var(--text-muted);
+}
+.card-location svg { flex-shrink: 0; }
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+.view-btn {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 0.8rem;
+  border-radius: var(--radius-sm);
+}
+
+/* Condition badge colors */
+.cond-new    { background: rgba(16,185,129,0.14); color: #34D399; border: 1px solid rgba(16,185,129,0.28); }
+.cond-likenew{ background: rgba(59,130,246,0.14); color: #60A5FA; border: 1px solid rgba(59,130,246,0.28); }
+.cond-good   { background: rgba(139,92,246,0.14); color: #A78BFA; border: 1px solid rgba(139,92,246,0.28); }
+.cond-used   { background: rgba(245,158,11,0.14); color: #FBBF24; border: 1px solid rgba(245,158,11,0.28); }
+.cond-forparts{ background: rgba(239,68,68,0.14); color: #F87171; border: 1px solid rgba(239,68,68,0.28); }
+.cond-na     { background: rgba(107,114,128,0.14); color: #9CA3AF; border: 1px solid rgba(107,114,128,0.2); }
+
+/* Empty state */
+#empty-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+  gap: 14px;
+  grid-column: 1 / -1;
+}
+#empty-state.show { display: flex; }
+.empty-icon { opacity: 0.25; }
+.empty-title { font-size: 1.05rem; font-weight: 700; color: var(--text-secondary); }
+.empty-sub { font-size: 0.85rem; color: var(--text-muted); }
+
+/* ===========================
+   FOOTER
+=========================== */
+#footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 24px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.footer-brand { font-size: 1.1rem; font-weight: 800; }
+.footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.footer-link {
+  font-size: 0.83rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+  transition: color var(--transition);
+  padding: 0;
+}
+.footer-link:hover { color: var(--text-primary); }
+.footer-copy { font-size: 0.77rem; color: var(--text-muted); white-space: nowrap; }
+
+/* ===========================
+   MODAL BASE
+=========================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.modal {
+  background: #131C2E;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(16px);
+  transition: transform var(--transition);
+  position: relative;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  transition: var(--transition);
+}
+.modal-close:hover { background: rgba(239,68,68,0.15); color: #F87171; border-color: rgba(239,68,68,0.3); }
+
+.modal-header { padding: 24px 24px 0; }
+.modal-body { padding: 18px 24px 24px; }
+.modal-title { font-size: 1.2rem; font-weight: 700; padding-right: 36px; }
+.modal-sub { font-size: 0.83rem; color: var(--text-muted); margin-top: 4px; }
+
+/* Form */
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.form-label { font-size: 0.81rem; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.3px; }
+.form-input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 9px 12px;
+  outline: none;
+  transition: var(--transition);
+}
+.form-input::placeholder { color: var(--text-muted); }
+.form-input:focus { border-color: var(--border-hover); background: rgba(255,255,255,0.08); }
+.form-input option { background: #1F2937; }
+textarea.form-input { resize: vertical; min-height: 80px; }
+.form-submit { width: 100%; height: 42px; font-size: 0.95rem; border-radius: var(--radius-sm); margin-top: 4px; }
+
+.upload-area {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.upload-area:hover { border-color: var(--border-hover); background: rgba(59,130,246,0.04); }
+.upload-area p { font-size: 0.83rem; color: var(--text-muted); margin-top: 8px; }
+
+/* ===========================
+   DETAIL MODAL
+=========================== */
+.detail-modal { max-width: 680px; }
+.detail-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0 8px;
+}
+.detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  padding: 10px 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  margin: 8px 0 16px;
+}
+.detail-meta-item { display: flex; align-items: center; gap: 5px; }
+.detail-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.75; margin-bottom: 20px; }
+
+.seller-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.seller-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+.seller-info { flex: 1; }
+.seller-name { font-weight: 600; font-size: 0.92rem; }
+.seller-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.71rem;
+  font-weight: 600;
+  color: #34D399;
+  background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.2);
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-top: 4px;
+}
+.detail-actions { display: flex; gap: 10px; margin-bottom: 22px; }
+.detail-actions button {
+  flex: 1;
+  height: 42px;
+  font-size: 0.9rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: var(--transition);
+}
+.btn-contact {
+  background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
+  color: #fff;
+  border: none;
+}
+.btn-contact:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-save {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+.btn-save:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+
+.related-section-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 10px;
+}
+.related-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.related-card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(59,130,246,0.2);
+  transform: translateY(-2px);
+}
+.related-title { font-size: 0.81rem; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.related-loc { font-size: 0.73rem; color: var(--text-muted); }
+
+/* ===========================
+   FOOTER MODAL CONTENT
+=========================== */
+.footer-modal-content {
+  font-size: 0.87rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+.footer-modal-content h3 { font-size: 0.98rem; font-weight: 700; color: var(--text-primary); margin: 16px 0 6px; }
+.footer-modal-content h3:first-child { margin-top: 0; }
+.footer-modal-content p { margin-bottom: 8px; }
+
+/* ===========================
+   MOBILE
+=========================== */
+@media (max-width: 900px) {
+  #sidebar {
+    position: fixed;
+    left: -268px;
+    top: var(--header-height);
+    z-index: 90;
+    transition: left 0.28s ease;
+    box-shadow: 4px 0 32px rgba(0,0,0,0.5);
+    width: 268px;
+  }
+  #sidebar.open { left: 0; }
+  #sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    top: var(--header-height);
+    background: rgba(0,0,0,0.6);
+    z-index: 80;
+    cursor: pointer;
+  }
+  #sidebar-overlay.show { display: block; }
+  #mobile-menu-btn { display: flex; }
+  .header-location { display: none; }
+  #main-content { padding: 14px; }
+  #footer { padding: 18px 16px; }
+  .footer-links { gap: 14px; }
+}
+
+@media (max-width: 600px) {
+  #header { padding: 0 12px; gap: 8px; }
+  .header-logo { font-size: 1.1rem; }
+  .header-actions .btn-ghost { display: none; }
+  #listings-grid { grid-template-columns: 1fr; }
+  .related-grid { grid-template-columns: 1fr 1fr; }
+  #footer { flex-direction: column; align-items: flex-start; }
+  .detail-actions { flex-direction: column; }
+}
+
+@media (max-width: 420px) {
+  .header-actions .btn-post { display: none; }
+  .related-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
-
 <body>
 
-<header>
-  <div class="logo">UseTrueDeal</div>
+<!-- ==============================
+     HEADER
+============================== -->
+<header id="header">
+  <button id="mobile-menu-btn" aria-label="Toggle sidebar" onclick="toggleSidebar()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+
+  <div class="header-logo gradient-text" onclick="resetAll()" role="button" tabindex="0">UseTrueDeal</div>
+
+  <div class="header-search">
+    <span class="search-icon">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </span>
+    <input type="text" id="search-input" placeholder="Search listings, cars, apartments..." autocomplete="off" oninput="handleSearch()">
+    <button class="btn-gradient search-btn" onclick="handleSearch()">Search</button>
+  </div>
+
+  <div class="header-location">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--text-muted);flex-shrink:0">
+      <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+      <circle cx="12" cy="10" r="3"/>
+    </svg>
+    <select id="location-filter" onchange="handleSearch()">
+      <option value="">All Locations</option>
+      <option>Los Angeles, CA</option>
+      <option>San Francisco, CA</option>
+      <option>New York, NY</option>
+      <option>Chicago, IL</option>
+      <option>Houston, TX</option>
+      <option>Austin, TX</option>
+      <option>Miami, FL</option>
+      <option>Seattle, WA</option>
+      <option>Boston, MA</option>
+      <option>Denver, CO</option>
+      <option>Dallas, TX</option>
+      <option>Phoenix, AZ</option>
+      <option>Portland, OR</option>
+      <option>Atlanta, GA</option>
+      <option>Nashville, TN</option>
+      <option>Charlotte, NC</option>
+      <option>San Diego, CA</option>
+      <option>San Jose, CA</option>
+      <option>Las Vegas, NV</option>
+      <option>Brooklyn, NY</option>
+      <option>Remote</option>
+    </select>
+  </div>
+
+  <div class="header-actions">
+    <button class="btn-ghost" onclick="openModal('login-modal')">Login</button>
+    <button class="btn-gradient" onclick="openModal('signup-modal')">Sign Up</button>
+    <button class="btn-accent btn-post" onclick="openModal('post-modal')">+ Post Listing</button>
+  </div>
 </header>
 
-<div class="hero">
-  <h1>Find exactly what you want</h1>
-  <p>Write what you need. We find it.</p>
+<!-- Sidebar backdrop (mobile) -->
+<div id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-  <div class="search-box">
-    <input id="searchInput" placeholder="Example: cheap car LA under 15000">
-    <button onclick="searchItems()">Search</button>
+<!-- ==============================
+     LAYOUT
+============================== -->
+<div id="layout">
+
+  <!-- ==============================
+       SIDEBAR
+  ============================== -->
+  <aside id="sidebar">
+
+    <!-- CATEGORIES -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Browse Categories</div>
+
+      <div class="cat-item active" id="cat-all" onclick="selectAllCategories()">
+        <div class="cat-item-left">
+          <div class="cat-dot" style="background:var(--text-muted)"></div>
+          <span class="cat-item-name">All Categories</span>
+        </div>
+      </div>
+
+      <div class="cat-item" id="cat-Cars" onclick="toggleCatDropdown('Cars')">
+        <div class="cat-item-left">
+          <div class="cat-dot" style="background:#EF4444"></div>
+          <span class="cat-item-name">Cars</span>
+        </div>
+        <span class="cat-arrow" id="arrow-Cars"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </div>
+      <div class="sub-dropdown" id="sub-Cars"></div>
+
+      <div class="cat-item" id="cat-Real Estate" onclick="toggleCatDropdown('Real Estate')">
+        <div class="cat-item-left">
+          <div class="cat-dot" style="background:#10B981"></div>
+          <span class="cat-item-name">Real Estate</span>
+        </div>
+        <span class="cat-arrow" id="arrow-Real Estate"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </div>
+      <div class="sub-dropdown" id="sub-Real Estate"></div>
+
+      <div class="cat-item" id="cat-Phones" onclick="toggleCatDropdown('Phones')">
+        <div class="cat-item-left">
+          <div class="cat-dot" style="background:#3B82F6"></div>
+          <span class="cat-item-name">Phones</span>
+        </div>
+        <span class="cat-arrow" id="arrow-Phones"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </div>
+      <div class="sub-dropdown" id="sub-Phones"></div>
+
+      <div class="cat-item" id="cat-Computers" onclick="toggleCatDropdown('Computers')">
+        <div class="cat-item-left">
+          <div class="cat-dot" style="background:#8B5CF6"></div>
+          <span class="cat-item-name">Computers</span>
+        </div>
+        <span class="cat-arrow" id="arrow-Computers"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </div>
+      <div class="sub-dropdown" id="sub-Computers"></div>
+
+      <div class="cat-item" id="cat-Furniture" onclick="toggleCatDropdown('Furniture')">
+        <div class="cat-item-left">
+          <div class="cat-dot" style="background:#F59E0B"></div>
+          <span class="cat-item-name">Furniture</span>
+        </div>
+        <span class="cat-arrow" id="arrow-Furniture"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </div>
+      <div class="sub-dropdown" id="sub-Furniture"></div>
+
+      <div class="cat-item" id="cat-Electronics" onclick="toggleCatDropdown('Electronics')">
+        <div class="cat-item-left">
+          <div class="cat-dot" style="background:#06B6D4"></div>
+          <span class="cat-item-name">Electronics</span>
+        </div>
+        <span class="cat-arrow" id="arrow-Electronics"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </div>
+      <div class="sub-dropdown" id="sub-Electronics"></div>
+
+      <div class="cat-item" id="cat-Jobs" onclick="toggleCatDropdown('Jobs')">
+        <div class="cat-item-left">
+          <div class="cat-dot" style="background:#EC4899"></div>
+          <span class="cat-item-name">Jobs</span>
+        </div>
+        <span class="cat-arrow" id="arrow-Jobs"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </div>
+      <div class="sub-dropdown" id="sub-Jobs"></div>
+
+      <div class="cat-item" id="cat-Services" onclick="toggleCatDropdown('Services')">
+        <div class="cat-item-left">
+          <div class="cat-dot" style="background:#84CC16"></div>
+          <span class="cat-item-name">Services</span>
+        </div>
+        <span class="cat-arrow" id="arrow-Services"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </div>
+      <div class="sub-dropdown" id="sub-Services"></div>
+
+      <div class="cat-item" id="cat-Free Stuff" onclick="toggleCatDropdown('Free Stuff')">
+        <div class="cat-item-left">
+          <div class="cat-dot" style="background:#22D3ED"></div>
+          <span class="cat-item-name">Free Stuff</span>
+        </div>
+        <span class="cat-arrow" id="arrow-Free Stuff"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </div>
+      <div class="sub-dropdown" id="sub-Free Stuff"></div>
+    </div>
+
+    <!-- CONDITION FILTER -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Condition</div>
+      <div class="condition-list" id="condition-list"></div>
+    </div>
+
+    <!-- POPULAR SEARCHES -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Popular Searches</div>
+      <div class="popular-tags" id="popular-tags"></div>
+    </div>
+
+  </aside>
+
+  <!-- ==============================
+       MAIN CONTENT
+  ============================== -->
+  <main id="main-content">
+
+    <!-- Active Filters Bar -->
+    <div id="filters-bar" class="hidden"></div>
+
+    <!-- Results Header -->
+    <div id="results-header">
+      <div class="results-count" id="results-count">
+        Showing <strong>35</strong> listings
+      </div>
+    </div>
+
+    <!-- Listings Grid -->
+    <div id="listings-grid">
+      <div id="empty-state">
+        <div class="empty-icon">
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            <line x1="8" y1="11" x2="14" y2="11"/>
+          </svg>
+        </div>
+        <div class="empty-title">No results found</div>
+        <div class="empty-sub">Try different keywords or browse all categories</div>
+        <button class="btn-ghost" style="height:36px;padding:0 20px;font-size:0.85rem;margin-top:6px" onclick="resetAll()">Clear all filters</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ==============================
+     FOOTER
+============================== -->
+<footer id="footer">
+  <div class="footer-brand gradient-text">UseTrueDeal</div>
+  <div class="footer-links">
+    <button class="footer-link" onclick="openFooterModal('about')">About</button>
+    <button class="footer-link" onclick="openFooterModal('support')">Support</button>
+    <button class="footer-link" onclick="openFooterModal('terms')">Terms</button>
+    <button class="footer-link" onclick="openFooterModal('privacy')">Privacy</button>
+    <button class="footer-link" onclick="openFooterModal('contact')">Contact</button>
+  </div>
+  <div class="footer-copy">&copy; 2025 UseTrueDeal. All rights reserved.</div>
+</footer>
+
+<!-- ==============================
+     LOGIN MODAL
+============================== -->
+<div class="modal-overlay" id="login-modal" onclick="handleOverlayClick(event,'login-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('login-modal')">&times;</button>
+    <div class="modal-header">
+      <div class="modal-title">Welcome back</div>
+      <div class="modal-sub">Sign in to your UseTrueDeal account</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" placeholder="••••••••">
+      </div>
+      <button class="btn-gradient form-submit" onclick="alert('Signed in successfully!')">Sign In</button>
+      <p style="text-align:center;font-size:0.81rem;color:var(--text-muted);margin-top:14px">
+        Don't have an account?
+        <span style="color:var(--accent);cursor:pointer;font-weight:500" onclick="closeModal('login-modal');openModal('signup-modal')">Sign up</span>
+      </p>
+    </div>
   </div>
 </div>
 
-<div class="cards">
-  <div class="card">iPhone 13<br>$500</div>
-  <div class="card">Honda Civic 2019<br>$13,200</div>
-  <div class="card">Apartment LA<br>$2,100/mo</div>
-  <div class="card">Gaming PC<br>$900</div>
+<!-- ==============================
+     SIGNUP MODAL
+============================== -->
+<div class="modal-overlay" id="signup-modal" onclick="handleOverlayClick(event,'signup-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('signup-modal')">&times;</button>
+    <div class="modal-header">
+      <div class="modal-title">Create your account</div>
+      <div class="modal-sub">Join thousands of buyers and sellers</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-input" placeholder="John Doe">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" placeholder="Create a strong password">
+      </div>
+      <button class="btn-gradient form-submit" onclick="alert('Account created successfully!')">Create Account</button>
+      <p style="text-align:center;font-size:0.81rem;color:var(--text-muted);margin-top:14px">
+        Already have an account?
+        <span style="color:var(--accent);cursor:pointer;font-weight:500" onclick="closeModal('signup-modal');openModal('login-modal')">Sign in</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ==============================
+     POST LISTING MODAL
+============================== -->
+<div class="modal-overlay" id="post-modal" onclick="handleOverlayClick(event,'post-modal')">
+  <div class="modal" style="max-width:580px">
+    <button class="modal-close" onclick="closeModal('post-modal')">&times;</button>
+    <div class="modal-header">
+      <div class="modal-title">Post a New Listing</div>
+      <div class="modal-sub">Reach thousands of buyers near you</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-input" id="post-category" onchange="updatePostSubcategories()">
+          <option value="">Select a category</option>
+          <option>Cars</option>
+          <option>Real Estate</option>
+          <option>Phones</option>
+          <option>Computers</option>
+          <option>Furniture</option>
+          <option>Electronics</option>
+          <option>Jobs</option>
+          <option>Services</option>
+          <option>Free Stuff</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Subcategory</label>
+        <select class="form-input" id="post-subcategory">
+          <option value="">Select category first</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Title</label>
+        <input type="text" class="form-input" placeholder="e.g. 2021 Honda Civic Sport">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-input" placeholder="Describe your item in detail..." rows="4"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Location</label>
+        <input type="text" class="form-input" placeholder="City, State">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Condition</label>
+        <select class="form-input">
+          <option>New</option>
+          <option>Like New</option>
+          <option>Good</option>
+          <option>Used</option>
+          <option>For Parts</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Photos</label>
+        <div class="upload-area" onclick="alert('File upload would open here.')">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text-muted);margin:0 auto;display:block">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <p>Click to upload photos or drag and drop</p>
+          <p style="font-size:0.73rem;margin-top:4px">PNG, JPG, WEBP up to 10MB</p>
+        </div>
+      </div>
+      <button class="btn-gradient form-submit" onclick="alert('Listing published successfully!')">Publish Listing</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==============================
+     DETAIL MODAL
+============================== -->
+<div class="modal-overlay" id="detail-modal" onclick="handleOverlayClick(event,'detail-modal')">
+  <div class="modal detail-modal">
+    <button class="modal-close" onclick="closeModal('detail-modal')">&times;</button>
+    <div class="modal-header" id="detail-header"></div>
+    <div class="modal-body" id="detail-body"></div>
+  </div>
+</div>
+
+<!-- ==============================
+     FOOTER CONTENT MODAL
+============================== -->
+<div class="modal-overlay" id="footer-modal" onclick="handleOverlayClick(event,'footer-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('footer-modal')">&times;</button>
+    <div class="modal-header" id="footer-modal-header"></div>
+    <div class="modal-body" id="footer-modal-body"></div>
+  </div>
 </div>
 
 <script>
-function searchItems(){
-  let input = document.getElementById("searchInput").value.toLowerCase();
-  let cards = document.querySelectorAll(".card");
+// ============================================================
+//  DATA
+// ============================================================
+var LISTINGS = [
+  { id:1,  title:"2019 Honda Civic Sport",              description:"Well-maintained sedan with low mileage. Clean title, single owner. Recent oil change and new tires installed last month.",               category:"Cars",        subcategory:"Honda",           location:"Los Angeles, CA",    condition:"Used"     },
+  { id:2,  title:"2021 Toyota Camry XSE V6",            description:"Sporty V6 model in excellent condition. Leather seats, sunroof, backup camera. One owner, no accidents.",                               category:"Cars",        subcategory:"Toyota",          location:"San Francisco, CA",  condition:"Like New" },
+  { id:3,  title:"Ford F-150 XLT 4x4 2020",             description:"Heavy duty truck perfect for work or adventure. Tow package, bed liner, running boards. Very clean.",                                   category:"Cars",        subcategory:"Ford",            location:"Denver, CO",         condition:"Used"     },
+  { id:4,  title:"Tesla Model 3 Standard Range Plus",   description:"Electric vehicle with autopilot. 250 mile range, white interior, 19 inch wheels. Supercharging included.",                              category:"Cars",        subcategory:"Tesla",           location:"Austin, TX",         condition:"Like New" },
+  { id:5,  title:"2015 BMW 3 Series 328i xDrive",       description:"Luxury sport sedan, well maintained. Navigation, heated seats, sport package. AWD, very fun to drive.",                                 category:"Cars",        subcategory:"BMW",             location:"Chicago, IL",        condition:"Used"     },
+  { id:6,  title:"2022 Chevrolet Silverado 1500 LT",    description:"Low mileage work truck, trailering package, spray-in bedliner. Bluetooth, backup cam.",                                                 category:"Cars",        subcategory:"Chevrolet",       location:"Houston, TX",        condition:"Like New" },
+  { id:7,  title:"Modern 2BR Downtown Apartment",       description:"Spacious 2 bedroom in the heart of downtown. Floor to ceiling windows, city views, building gym.",                                      category:"Real Estate", subcategory:"Apartment",       location:"New York, NY",       condition:"New"      },
+  { id:8,  title:"Cozy Studio Near University",         description:"Perfect for students or young professionals. Walking distance to campus, all utilities included in rent.",                              category:"Real Estate", subcategory:"Studio",          location:"Boston, MA",         condition:"Good"     },
+  { id:9,  title:"3BR Family Home with Large Yard",     description:"Quiet suburban neighborhood, great schools nearby. Large backyard, 2-car garage, recently renovated kitchen.",                          category:"Real Estate", subcategory:"House",           location:"Houston, TX",        condition:"Good"     },
+  { id:10, title:"Luxury Downtown Penthouse",           description:"Top floor unit with panoramic skyline views. Chef kitchen, private terrace, concierge and valet service.",                              category:"Real Estate", subcategory:"Penthouse",       location:"Miami, FL",          condition:"New"      },
+  { id:11, title:"1BR Condo Near Beach",                description:"Walking distance to the beach. Recently renovated, open floor plan, in-unit washer and dryer.",                                         category:"Real Estate", subcategory:"Condo",           location:"San Diego, CA",      condition:"Like New" },
+  { id:12, title:"Charming Townhouse 3BR/2.5BA",        description:"End unit townhome in gated community. Private patio, attached garage, updated bathrooms.",                                              category:"Real Estate", subcategory:"Townhouse",       location:"Charlotte, NC",      condition:"Good"     },
+  { id:13, title:"iPhone 14 Pro Max 256GB",             description:"Space Black, excellent condition. Always kept in case with screen protector. Original box and all accessories included.",               category:"Phones",      subcategory:"Apple",           location:"Los Angeles, CA",    condition:"Like New" },
+  { id:14, title:"Samsung Galaxy S23 Ultra 512GB",      description:"Phantom Black. S-Pen included, all accessories. Minor scratch on back, screen perfect.",                                                category:"Phones",      subcategory:"Samsung",         location:"Seattle, WA",        condition:"Used"     },
+  { id:15, title:"Google Pixel 7 Pro 128GB",            description:"Obsidian color, unlocked all carriers. Best-in-class camera system, clean IMEI, no issues.",                                            category:"Phones",      subcategory:"Google",          location:"Portland, OR",       condition:"Good"     },
+  { id:16, title:"iPhone 13 Mini 128GB",                description:"Midnight color, battery health 89%. No scratches, comes with original charger and box.",                                                category:"Phones",      subcategory:"Apple",           location:"Phoenix, AZ",        condition:"Used"     },
+  { id:17, title:"OnePlus 11 256GB",                    description:"Titan Black, 16GB RAM. Lightning fast, great battery life, 100W fast charging. Barely used.",                                           category:"Phones",      subcategory:"OnePlus",         location:"Dallas, TX",         condition:"Like New" },
+  { id:18, title:"MacBook Pro 14-inch M2 Pro",          description:"2023 model, 16GB RAM, 512GB SSD. Space Gray, excellent condition, AppleCare+ until 2026.",                                              category:"Computers",   subcategory:"Apple",           location:"San Jose, CA",       condition:"Like New" },
+  { id:19, title:"Custom Gaming PC RTX 4080",           description:"Intel i9-13900K, 32GB DDR5 RAM, 2TB NVMe SSD. Built 6 months ago, runs all games at ultra settings.",                                  category:"Computers",   subcategory:"MSI",             location:"Dallas, TX",         condition:"Like New" },
+  { id:20, title:"Dell XPS 15 9520 Laptop",             description:"Intel i7-12700H, 16GB RAM, 512GB SSD, 4K OLED touch display. Perfect for creative work.",                                              category:"Computers",   subcategory:"Dell",            location:"Atlanta, GA",        condition:"Good"     },
+  { id:21, title:"Lenovo ThinkPad X1 Carbon Gen 10",   description:"14-inch, Intel i7, 16GB LPDDR5, 1TB SSD. Ultralight business laptop, 20hr battery life.",                                              category:"Computers",   subcategory:"Lenovo",          location:"Chicago, IL",        condition:"Like New" },
+  { id:22, title:"Mid-Century Modern 3-Seater Sofa",   description:"Charcoal gray fabric, solid wood legs. Clean, no stains or damage. Pet-free smoke-free home.",                                          category:"Furniture",   subcategory:"Couch/Sofa",      location:"Brooklyn, NY",       condition:"Good"     },
+  { id:23, title:'Electric Standing Desk 60x30"',       description:"Motorized height adjustable desk. Includes dual monitor arm and cable management tray.",                                                category:"Furniture",   subcategory:"Desk",            location:"Austin, TX",         condition:"Like New" },
+  { id:24, title:"King Platform Bed Frame Walnut",      description:"Solid wood walnut finish with upholstered headboard. No box spring needed, easy to disassemble.",                                       category:"Furniture",   subcategory:"Bed Frame",       location:"Portland, OR",       condition:"Good"     },
+  { id:25, title:'Sony 65" 4K OLED Bravia XR',          description:"Model A80K, perfect picture quality. Barely 1 year old, minimal use. All remotes and stand included.",                                  category:"Electronics", subcategory:"TV",              location:"Nashville, TN",      condition:"Like New" },
+  { id:26, title:"Sony WH-1000XM5 Headphones",         description:"Industry-leading noise cancellation. Original accessories and carry case included. Firmware updated.",                                  category:"Electronics", subcategory:"Headphones",      location:"Denver, CO",         condition:"Like New" },
+  { id:27, title:"DJI Mini 3 Pro Drone",                description:"Under 10 hours total flight time. All propellers intact, no crashes, all accessories included.",                                        category:"Electronics", subcategory:"Drone",           location:"Las Vegas, NV",      condition:"Like New" },
+  { id:28, title:"PlayStation 5 Disc Edition Bundle",  description:"Includes PS5, 2 controllers, charging dock, and 3 games. Excellent condition, rarely used.",                                            category:"Electronics", subcategory:"Gaming Console",  location:"Phoenix, AZ",        condition:"Like New" },
+  { id:29, title:"Senior React Developer - Remote",    description:"Full-time remote position. 5+ years React experience required. Competitive salary, full benefits, flexible hours.",                     category:"Jobs",        subcategory:"IT & Tech",       location:"Remote",             condition:"N/A"      },
+  { id:30, title:"Freelance Graphic Designer Needed",  description:"Part-time contract for branding and social media. Strong portfolio required. Flexible schedule.",                                        category:"Jobs",        subcategory:"Design",          location:"New York, NY",       condition:"N/A"      },
+  { id:31, title:"Professional House Deep Cleaning",   description:"Full deep clean service up to 3000 sqft. Eco-friendly products, insured and bonded team.",                                              category:"Services",    subcategory:"Cleaning",        location:"Los Angeles, CA",    condition:"N/A"      },
+  { id:32, title:"Certified Personal Trainer",         description:"In-home fitness sessions. Customized workout and nutrition plans tailored to your goals.",                                               category:"Services",    subcategory:"Lessons & Tutoring", location:"Miami, FL",       condition:"N/A"      },
+  { id:33, title:"Free Moving Boxes - All Sizes",      description:"About 30 boxes from recent move. Various sizes, mostly good condition. Must take all at once.",                                         category:"Free Stuff",  subcategory:"Household Items", location:"Seattle, WA",        condition:"Used"     },
+  { id:34, title:"Free Succulent Plant Collection",    description:"Downsizing collection. 8 healthy succulents in ceramic pots. Great for beginners.",                                                    category:"Free Stuff",  subcategory:"Garden",          location:"Austin, TX",         condition:"Good"     },
+  { id:35, title:'Samsung 32" QHD Monitor',            description:"144Hz, 1ms response time, USB-C and HDMI. Great for gaming and productivity. Minor bezel scratch.",                                     category:"Electronics", subcategory:"Monitor",         location:"San Jose, CA",       condition:"Used"     }
+];
 
-  cards.forEach(card=>{
-    let text = card.innerText.toLowerCase();
+var CATEGORIES_DATA = {
+  "Cars":        ["Acura","Aston Martin","Audi","Bentley","BMW","Buick","Cadillac","Chevrolet","Chrysler","Dodge","Ferrari","Ford","Genesis","GMC","Honda","Hyundai","Infiniti","Jaguar","Jeep","Kia","Lamborghini","Land Rover","Lexus","Lincoln","Maserati","Mazda","McLaren","Mercedes-Benz","MINI","Mitsubishi","Nissan","Porsche","Ram","Rolls-Royce","Subaru","Tesla","Toyota","Volkswagen","Volvo"],
+  "Real Estate": ["Apartment","Condo","Duplex","House","Land/Lot","Loft","Mobile Home","Multi-Family","Penthouse","Room for Rent","Studio","Townhouse","Triplex","Villa"],
+  "Phones":      ["Apple","Asus","BlackBerry","Google","Huawei","LG","Motorola","Nokia","OnePlus","Oppo","Realme","Samsung","Sharp","Sony","Vivo","Xiaomi"],
+  "Computers":   ["Acer","Apple","Asus","Dell","HP","Lenovo","LG","Microsoft","MSI","Razer","Samsung","Toshiba"],
+  "Furniture":   ["Bed Frame","Bookshelf","Chair","Couch/Sofa","Desk","Dining Table","Dresser","Entertainment Center","Mattress","Mirror","Nightstand","Ottoman","Outdoor Furniture","Recliner","Sectional","Shelf","Side Table","Wardrobe"],
+  "Electronics": ["Audio System","Camera","Drone","Gaming Console","Headphones","Home Theater","Keyboard & Mouse","Monitor","Smart Home Device","Smartwatch","Speaker","Tablet","TV","VR Headset","Webcam"],
+  "Jobs":        ["Accounting","Construction","Customer Service","Design","Education","Engineering","Finance","Healthcare","Hospitality","IT & Tech","Legal","Management","Marketing","Part-Time","Remote","Sales","Trades & Labor","Transportation"],
+  "Services":    ["Auto Repair","Babysitting","Catering","Cleaning","Delivery","Event Planning","Gardening","Handyman","Legal","Lessons & Tutoring","Moving","Pet Care","Photography","Plumbing","Renovation","Tech Support"],
+  "Free Stuff":  ["Books","Clothes","Electronics","Furniture","Garden","Household Items","Kids & Baby","Miscellaneous","Sports Equipment","Tools"]
+};
 
-    if(text.includes(input)){
-      card.style.display="block";
-    } else {
-      card.style.display="none";
+var CAT_COLORS = {
+  "Cars":        "#EF4444",
+  "Real Estate": "#10B981",
+  "Phones":      "#3B82F6",
+  "Computers":   "#8B5CF6",
+  "Furniture":   "#F59E0B",
+  "Electronics": "#06B6D4",
+  "Jobs":        "#EC4899",
+  "Services":    "#84CC16",
+  "Free Stuff":  "#22D3ED"
+};
+
+var CONDITIONS = ["Any","New","Like New","Good","Used","For Parts"];
+
+var POPULAR_SEARCHES = ["iPhone 14","Gaming PC","Apartment NYC","Tesla","MacBook Pro","Free Furniture","Remote Jobs","Sony Headphones"];
+
+var FOOTER_CONTENT = {
+  about: {
+    title: "About UseTrueDeal",
+    body: '<div class="footer-modal-content"><h3>Our Mission</h3><p>UseTrueDeal is a modern, community-driven marketplace connecting buyers and sellers across the United States. We believe in transparent, honest transactions and provide a platform where trust is paramount.</p><h3>What We Offer</h3><p>From cars and real estate to electronics, furniture, jobs, and services — UseTrueDeal is your one-stop destination for local and remote deals. Our platform features verified sellers, smart search, and powerful category filters to help you find exactly what you need.</p><h3>Our Values</h3><p>We are committed to transparency, safety, and community. Every listing is reviewed, and every seller can be verified to ensure a safe marketplace for everyone.</p><h3>Founded</h3><p>UseTrueDeal was founded in 2022 with a vision to create a marketplace that people can genuinely trust.</p></div>'
+  },
+  support: {
+    title: "Support Center",
+    body: '<div class="footer-modal-content"><h3>How can we help?</h3><p>Our support team is available 7 days a week to assist you with any questions or concerns.</p><h3>Common Topics</h3><p><strong>Account Issues</strong> — Login problems, password reset, account verification.</p><p><strong>Listings</strong> — Posting, editing, or removing listings.</p><p><strong>Safety</strong> — Reporting suspicious activity or fraudulent listings.</p><p><strong>Payments</strong> — Billing questions and transaction disputes.</p><h3>Contact Support</h3><p>Email: support@usetruedeals.com<br>Response time: Within 24 hours on business days.</p></div>'
+  },
+  terms: {
+    title: "Terms of Service",
+    body: '<div class="footer-modal-content"><h3>Agreement to Terms</h3><p>By accessing or using UseTrueDeal, you agree to be bound by these Terms of Service and all applicable laws and regulations.</p><h3>Use of Platform</h3><p>You may use our platform for lawful purposes only. All users must be 18 years or older. You agree not to post false, misleading, or fraudulent listings.</p><h3>Listings Policy</h3><p>UseTrueDeal reserves the right to remove any listing that violates our community guidelines. Prohibited items include illegal goods, weapons, and counterfeit products.</p><h3>Limitation of Liability</h3><p>UseTrueDeal acts solely as a platform facilitator and is not responsible for transactions between buyers and sellers.</p><h3>Changes to Terms</h3><p>We reserve the right to modify these terms at any time. Continued use constitutes acceptance of updated terms.</p></div>'
+  },
+  privacy: {
+    title: "Privacy Policy",
+    body: '<div class="footer-modal-content"><h3>Information We Collect</h3><p>We collect information you provide directly, such as name, email, and listing details. We also collect usage data to improve our services.</p><h3>How We Use Your Information</h3><p>Your information is used to provide and improve our services, communicate with you, and protect the safety of our community. We do not sell your personal data to third parties.</p><h3>Data Security</h3><p>We implement industry-standard security measures to protect your personal information.</p><h3>Your Rights</h3><p>You have the right to access, correct, or delete your personal data at any time. Contact us at privacy@usetruedeals.com for data requests.</p></div>'
+  },
+  contact: {
+    title: "Contact Us",
+    body: '<div class="footer-modal-content"><h3>Get In Touch</h3><p>We\'d love to hear from you. Reach out through any of the channels below.</p><h3>General Inquiries</h3><p>Email: hello@usetruedeals.com</p><h3>Support</h3><p>Email: support@usetruedeals.com<br>Available Monday–Friday, 9am–6pm EST</p><h3>Business &amp; Partnerships</h3><p>Email: partnerships@usetruedeals.com</p><h3>Mailing Address</h3><p>UseTrueDeal Inc.<br>123 Market Street, Suite 100<br>San Francisco, CA 94105</p></div>'
+  }
+};
+
+// ============================================================
+//  STATE
+// ============================================================
+var state = {
+  searchQuery:       "",
+  activeCategory:    null,
+  activeSubcategory: null,
+  activeCondition:   "Any",
+  openDropdowns:     {}   // cat -> bool
+};
+
+// ============================================================
+//  INIT
+// ============================================================
+function init() {
+  buildSubDropdowns();
+  buildConditionFilter();
+  buildPopularTags();
+  renderListings();
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(function(m) {
+        m.classList.remove('open');
+      });
+      document.body.style.overflow = '';
     }
   });
 }
-</script>
 
+function buildSubDropdowns() {
+  var cats = Object.keys(CATEGORIES_DATA);
+  for (var i = 0; i < cats.length; i++) {
+    var cat = cats[i];
+    var container = document.getElementById('sub-' + cat);
+    if (!container) continue;
+    var subs = CATEGORIES_DATA[cat];
+    for (var j = 0; j < subs.length; j++) {
+      var sub = subs[j];
+      var item = document.createElement('div');
+      item.className = 'sub-item';
+      item.setAttribute('data-cat', cat);
+      item.setAttribute('data-sub', sub);
+      item.textContent = sub;
+      (function(c, s) {
+        item.addEventListener('click', function(e) {
+          e.stopPropagation();
+          selectSubcategory(c, s);
+        });
+      })(cat, sub);
+      container.appendChild(item);
+    }
+  }
+}
+
+function buildConditionFilter() {
+  var list = document.getElementById('condition-list');
+  for (var i = 0; i < CONDITIONS.length; i++) {
+    var cond = CONDITIONS[i];
+    var btn = document.createElement('button');
+    btn.className = 'condition-btn' + (cond === 'Any' ? ' active' : '');
+    btn.setAttribute('data-cond', cond);
+    btn.innerHTML =
+      '<div class="condition-radio"><div class="condition-radio-inner"></div></div>' +
+      escHtml(cond);
+    (function(c) {
+      btn.addEventListener('click', function() { selectCondition(c); });
+    })(cond);
+    list.appendChild(btn);
+  }
+}
+
+function buildPopularTags() {
+  var container = document.getElementById('popular-tags');
+  for (var i = 0; i < POPULAR_SEARCHES.length; i++) {
+    var tag = POPULAR_SEARCHES[i];
+    var el = document.createElement('span');
+    el.className = 'popular-tag';
+    el.textContent = tag;
+    (function(t) {
+      el.addEventListener('click', function() {
+        document.getElementById('search-input').value = t;
+        state.searchQuery = t;
+        renderListings();
+        updateFiltersBar();
+      });
+    })(tag);
+    container.appendChild(el);
+  }
+}
+
+// ============================================================
+//  SIDEBAR INTERACTIONS
+// ============================================================
+function toggleCatDropdown(cat) {
+  var wasOpen = !!state.openDropdowns[cat];
+
+  // Close all open dropdowns
+  var allCats = Object.keys(CATEGORIES_DATA);
+  for (var i = 0; i < allCats.length; i++) {
+    var c = allCats[i];
+    if (state.openDropdowns[c]) {
+      state.openDropdowns[c] = false;
+      var subEl = document.getElementById('sub-' + c);
+      var arrEl = document.getElementById('arrow-' + c);
+      if (subEl) subEl.classList.remove('open');
+      if (arrEl) arrEl.classList.remove('open');
+    }
+  }
+
+  if (!wasOpen) {
+    // Open this one
+    state.openDropdowns[cat] = true;
+    var subEl2 = document.getElementById('sub-' + cat);
+    var arrEl2 = document.getElementById('arrow-' + cat);
+    if (subEl2) subEl2.classList.add('open');
+    if (arrEl2) arrEl2.classList.add('open');
+
+    // Select this category
+    activateCategoryUI(cat);
+    state.activeCategory = cat;
+    state.activeSubcategory = null;
+    renderListings();
+    updateFiltersBar();
+  } else {
+    // Was open, now closed — keep category selected but clear subcategory
+    if (state.activeCategory === cat) {
+      // Deselect category entirely on second click
+      state.activeCategory = null;
+      state.activeSubcategory = null;
+      clearAllCatUI();
+      document.getElementById('cat-all').classList.add('active');
+      renderListings();
+      updateFiltersBar();
+    }
+  }
+}
+
+function selectAllCategories() {
+  state.activeCategory = null;
+  state.activeSubcategory = null;
+  clearAllDropdowns();
+  clearAllCatUI();
+  document.getElementById('cat-all').classList.add('active');
+  renderListings();
+  updateFiltersBar();
+  if (window.innerWidth <= 900) closeSidebar();
+}
+
+function activateCategoryUI(cat) {
+  clearAllCatUI();
+  var catEl = document.getElementById('cat-' + cat);
+  if (catEl) catEl.classList.add('active');
+}
+
+function clearAllCatUI() {
+  document.querySelectorAll('.cat-item').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.sub-item').forEach(function(el) { el.classList.remove('active'); });
+}
+
+function clearAllDropdowns() {
+  var allCats = Object.keys(CATEGORIES_DATA);
+  for (var i = 0; i < allCats.length; i++) {
+    var c = allCats[i];
+    state.openDropdowns[c] = false;
+    var subEl = document.getElementById('sub-' + c);
+    var arrEl = document.getElementById('arrow-' + c);
+    if (subEl) subEl.classList.remove('open');
+    if (arrEl) arrEl.classList.remove('open');
+  }
+}
+
+function selectSubcategory(cat, sub) {
+  // Toggle: clicking same subcategory deselects
+  if (state.activeCategory === cat && state.activeSubcategory === sub) {
+    state.activeSubcategory = null;
+    document.querySelectorAll('.sub-item').forEach(function(el) { el.classList.remove('active'); });
+    renderListings();
+    updateFiltersBar();
+    return;
+  }
+
+  // Ensure this category's dropdown is open
+  if (!state.openDropdowns[cat]) {
+    clearAllDropdowns();
+    state.openDropdowns[cat] = true;
+    var subEl = document.getElementById('sub-' + cat);
+    var arrEl = document.getElementById('arrow-' + cat);
+    if (subEl) subEl.classList.add('open');
+    if (arrEl) arrEl.classList.add('open');
+  }
+
+  state.activeCategory = cat;
+  state.activeSubcategory = sub;
+
+  activateCategoryUI(cat);
+
+  // Highlight the sub item
+  document.querySelectorAll('.sub-item').forEach(function(el) {
+    el.classList.toggle('active',
+      el.getAttribute('data-cat') === cat && el.getAttribute('data-sub') === sub
+    );
+  });
+
+  renderListings();
+  updateFiltersBar();
+
+  if (window.innerWidth <= 900) closeSidebar();
+}
+
+function selectCondition(cond) {
+  state.activeCondition = cond;
+  document.querySelectorAll('.condition-btn').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('data-cond') === cond);
+  });
+  renderListings();
+  updateFiltersBar();
+}
+
+// ============================================================
+//  SEARCH
+// ============================================================
+function handleSearch() {
+  state.searchQuery = document.getElementById('search-input').value.trim();
+  renderListings();
+  updateFiltersBar();
+}
+
+function scoreItem(item, q) {
+  if (!q) return 1;
+  var lq = q.toLowerCase();
+  var score = 0;
+  if (item.title.toLowerCase().indexOf(lq) !== -1)       score += 6;
+  if (item.subcategory.toLowerCase().indexOf(lq) !== -1) score += 5;
+  if (item.category.toLowerCase().indexOf(lq) !== -1)    score += 4;
+  if (item.description.toLowerCase().indexOf(lq) !== -1) score += 2;
+  if (item.location.toLowerCase().indexOf(lq) !== -1)    score += 2;
+  if (item.condition.toLowerCase().indexOf(lq) !== -1)   score += 1;
+
+  // Special boosts
+  var catL = item.category.toLowerCase();
+  if ((lq === 'apartment' || lq === 'studio' || lq === 'condo') && catL === 'real estate') score += 8;
+  if ((lq === 'cheap' || lq === 'free') && catL === 'free stuff') score += 5;
+  if (lq === 'remote' && catL === 'jobs') score += 6;
+
+  return score;
+}
+
+// ============================================================
+//  RENDER
+// ============================================================
+function getFilteredListings() {
+  var results = LISTINGS.slice();
+
+  if (state.activeCategory) {
+    results = results.filter(function(l) { return l.category === state.activeCategory; });
+  }
+  if (state.activeSubcategory) {
+    results = results.filter(function(l) { return l.subcategory === state.activeSubcategory; });
+  }
+  if (state.activeCondition && state.activeCondition !== 'Any') {
+    results = results.filter(function(l) { return l.condition === state.activeCondition; });
+  }
+  var locFilter = document.getElementById('location-filter').value;
+  if (locFilter) {
+    results = results.filter(function(l) { return l.location === locFilter; });
+  }
+
+  if (state.searchQuery) {
+    var q = state.searchQuery;
+    var scored = results.map(function(item) {
+      return { item: item, score: scoreItem(item, q) };
+    }).filter(function(x) { return x.score > 0; });
+    scored.sort(function(a, b) { return b.score - a.score; });
+    results = scored.map(function(x) { return x.item; });
+  }
+
+  return results;
+}
+
+function renderListings() {
+  var results = getFilteredListings();
+  var grid = document.getElementById('listings-grid');
+  var emptyState = document.getElementById('empty-state');
+  var countEl = document.getElementById('results-count');
+
+  // Remove existing cards
+  var existing = grid.querySelectorAll('.listing-card');
+  for (var i = 0; i < existing.length; i++) {
+    existing[i].parentNode.removeChild(existing[i]);
+  }
+
+  if (results.length === 0) {
+    emptyState.classList.add('show');
+    countEl.innerHTML = 'Showing <strong>0</strong> listings';
+    return;
+  }
+
+  emptyState.classList.remove('show');
+  var plural = results.length !== 1 ? 's' : '';
+  countEl.innerHTML = 'Showing <strong>' + results.length + '</strong> listing' + plural;
+
+  for (var j = 0; j < results.length; j++) {
+    grid.appendChild(createCard(results[j]));
+  }
+}
+
+function createCard(listing) {
+  var card = document.createElement('div');
+  card.className = 'listing-card';
+
+  var color = CAT_COLORS[listing.category] || '#9CA3AF';
+  var condClass = getCondClass(listing.condition);
+  var condLabel = listing.condition === 'N/A' ? 'Open' : listing.condition;
+  var rgb = hexToRgb(color);
+
+  card.innerHTML =
+    '<div class="card-badges">' +
+      '<span class="cat-badge" style="background:rgba(' + rgb + ',0.16);color:' + color + ';border:1px solid rgba(' + rgb + ',0.34)">' + escHtml(listing.category) + '</span>' +
+      '<span class="sub-badge">' + escHtml(listing.subcategory) + '</span>' +
+      '<span class="cond-badge ' + condClass + '">' + escHtml(condLabel) + '</span>' +
+    '</div>' +
+    '<div class="card-title">' + escHtml(listing.title) + '</div>' +
+    '<div class="card-desc">' + escHtml(listing.description) + '</div>' +
+    '<div class="card-location">' +
+      '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+      escHtml(listing.location) +
+    '</div>' +
+    '<div class="card-footer">' +
+      '<button class="btn-gradient view-btn">View Details</button>' +
+    '</div>';
+
+  (function(id) {
+    card.addEventListener('click', function() { openDetail(id); });
+    card.querySelector('.view-btn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      openDetail(id);
+    });
+  })(listing.id);
+
+  return card;
+}
+
+function getCondClass(cond) {
+  var map = { 'New':'cond-new', 'Like New':'cond-likenew', 'Good':'cond-good', 'Used':'cond-used', 'For Parts':'cond-forparts', 'N/A':'cond-na' };
+  return map[cond] || 'cond-na';
+}
+
+function hexToRgb(hex) {
+  var r = parseInt(hex.slice(1,3), 16);
+  var g = parseInt(hex.slice(3,5), 16);
+  var b = parseInt(hex.slice(5,7), 16);
+  return r + ',' + g + ',' + b;
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ============================================================
+//  FILTERS BAR
+// ============================================================
+function updateFiltersBar() {
+  var bar = document.getElementById('filters-bar');
+  bar.innerHTML = '';
+  var hasFilters = false;
+
+  if (state.activeCategory) {
+    hasFilters = true;
+    bar.appendChild(makeChip('Category: ' + state.activeCategory, function() {
+      state.activeCategory = null;
+      state.activeSubcategory = null;
+      clearAllDropdowns();
+      clearAllCatUI();
+      document.getElementById('cat-all').classList.add('active');
+      renderListings();
+      updateFiltersBar();
+    }));
+  }
+
+  if (state.activeSubcategory) {
+    hasFilters = true;
+    bar.appendChild(makeChip('Subcategory: ' + state.activeSubcategory, function() {
+      state.activeSubcategory = null;
+      document.querySelectorAll('.sub-item').forEach(function(el) { el.classList.remove('active'); });
+      renderListings();
+      updateFiltersBar();
+    }));
+  }
+
+  if (state.activeCondition && state.activeCondition !== 'Any') {
+    hasFilters = true;
+    bar.appendChild(makeChip('Condition: ' + state.activeCondition, function() {
+      selectCondition('Any');
+    }));
+  }
+
+  if (state.searchQuery) {
+    hasFilters = true;
+    bar.appendChild(makeChip('Search: ' + state.searchQuery, function() {
+      state.searchQuery = '';
+      document.getElementById('search-input').value = '';
+      renderListings();
+      updateFiltersBar();
+    }));
+  }
+
+  var locFilter = document.getElementById('location-filter').value;
+  if (locFilter) {
+    hasFilters = true;
+    bar.appendChild(makeChip('Location: ' + locFilter, function() {
+      document.getElementById('location-filter').value = '';
+      renderListings();
+      updateFiltersBar();
+    }));
+  }
+
+  if (hasFilters) {
+    bar.classList.remove('hidden');
+    var clearBtn = document.createElement('button');
+    clearBtn.className = 'clear-all-btn';
+    clearBtn.textContent = 'Clear all';
+    clearBtn.addEventListener('click', resetAll);
+    bar.appendChild(clearBtn);
+  } else {
+    bar.classList.add('hidden');
+  }
+}
+
+function makeChip(label, onRemove) {
+  var chip = document.createElement('div');
+  chip.className = 'filter-chip';
+  chip.innerHTML = escHtml(label) + '<span class="filter-chip-x" title="Remove">&times;</span>';
+  chip.querySelector('.filter-chip-x').addEventListener('click', function(e) {
+    e.stopPropagation();
+    onRemove();
+  });
+  return chip;
+}
+
+function resetAll() {
+  state.searchQuery       = '';
+  state.activeCategory    = null;
+  state.activeSubcategory = null;
+  state.activeCondition   = 'Any';
+
+  document.getElementById('search-input').value    = '';
+  document.getElementById('location-filter').value = '';
+
+  clearAllDropdowns();
+  clearAllCatUI();
+  document.getElementById('cat-all').classList.add('active');
+
+  document.querySelectorAll('.condition-btn').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('data-cond') === 'Any');
+  });
+
+  renderListings();
+  updateFiltersBar();
+}
+
+// ============================================================
+//  DETAIL MODAL
+// ============================================================
+var SELLER_NAMES = ["Alex M.", "Sarah K.", "James W.", "Maria L.", "David C.", "Emma R.", "Noah T.", "Olivia B."];
+
+function openDetail(id) {
+  var listing = null;
+  for (var i = 0; i < LISTINGS.length; i++) {
+    if (LISTINGS[i].id === id) { listing = LISTINGS[i]; break; }
+  }
+  if (!listing) return;
+
+  var color = CAT_COLORS[listing.category] || '#9CA3AF';
+  var rgb = hexToRgb(color);
+  var condClass = getCondClass(listing.condition);
+  var condLabel = listing.condition === 'N/A' ? 'Open' : listing.condition;
+
+  // Related (same category, different id, up to 3)
+  var related = LISTINGS.filter(function(l) { return l.category === listing.category && l.id !== id; }).slice(0, 3);
+
+  // Seller
+  var sellerName = SELLER_NAMES[id % SELLER_NAMES.length];
+  var initials = sellerName.split(' ').map(function(s) { return s[0]; }).join('');
+
+  // Header
+  document.getElementById('detail-header').innerHTML =
+    '<div class="modal-title">' + escHtml(listing.title) + '</div>';
+
+  // Related HTML
+  var relHtml = '';
+  if (related.length > 0) {
+    relHtml = '<div class="related-section-title">Related Listings</div><div class="related-grid">';
+    for (var k = 0; k < related.length; k++) {
+      var r = related[k];
+      relHtml +=
+        '<div class="related-card" data-related-id="' + r.id + '">' +
+          '<div class="related-title">' + escHtml(r.title) + '</div>' +
+          '<div class="related-loc">' + escHtml(r.location) + '</div>' +
+        '</div>';
+    }
+    relHtml += '</div>';
+  }
+
+  document.getElementById('detail-body').innerHTML =
+    '<div class="detail-badges">' +
+      '<span class="cat-badge" style="background:rgba(' + rgb + ',0.16);color:' + color + ';border:1px solid rgba(' + rgb + ',0.34)">' + escHtml(listing.category) + '</span>' +
+      '<span class="sub-badge">' + escHtml(listing.subcategory) + '</span>' +
+      '<span class="cond-badge ' + condClass + '">' + escHtml(condLabel) + '</span>' +
+    '</div>' +
+    '<div class="detail-meta">' +
+      '<div class="detail-meta-item">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+        escHtml(listing.location) +
+      '</div>' +
+      '<div class="detail-meta-item">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>' +
+        escHtml(listing.subcategory) +
+      '</div>' +
+    '</div>' +
+    '<div class="detail-desc">' + escHtml(listing.description) + '</div>' +
+    '<div class="seller-card">' +
+      '<div class="seller-avatar">' + escHtml(initials) + '</div>' +
+      '<div class="seller-info">' +
+        '<div class="seller-name">' + escHtml(sellerName) + '</div>' +
+        '<div class="seller-verified">' +
+          '<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+          'Verified Seller' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="detail-actions">' +
+      '<button class="btn-contact" id="detail-contact-btn">Contact Seller</button>' +
+      '<button class="btn-save" id="detail-save-btn">Save Listing</button>' +
+    '</div>' +
+    relHtml;
+
+  // Wire up buttons
+  document.getElementById('detail-contact-btn').addEventListener('click', function() {
+    alert('Contact form would open here. You can message ' + sellerName + ' directly.');
+  });
+  var saveBtn = document.getElementById('detail-save-btn');
+  saveBtn.addEventListener('click', function() {
+    this.textContent = this.textContent === 'Save Listing' ? 'Saved!' : 'Save Listing';
+  });
+
+  // Wire up related cards
+  var relatedCards = document.querySelectorAll('[data-related-id]');
+  for (var ri = 0; ri < relatedCards.length; ri++) {
+    (function(relId) {
+      relatedCards[ri].addEventListener('click', function() {
+        closeModal('detail-modal');
+        setTimeout(function() { openDetail(relId); }, 80);
+      });
+    })(parseInt(relatedCards[ri].getAttribute('data-related-id')));
+  }
+
+  openModal('detail-modal');
+}
+
+// ============================================================
+//  FOOTER MODALS
+// ============================================================
+function openFooterModal(key) {
+  var data = FOOTER_CONTENT[key];
+  if (!data) return;
+  document.getElementById('footer-modal-header').innerHTML = '<div class="modal-title">' + escHtml(data.title) + '</div>';
+  document.getElementById('footer-modal-body').innerHTML = data.body;
+  openModal('footer-modal');
+}
+
+// ============================================================
+//  POST LISTING — DYNAMIC SUBCATEGORIES
+// ============================================================
+function updatePostSubcategories() {
+  var cat = document.getElementById('post-category').value;
+  var subSel = document.getElementById('post-subcategory');
+  subSel.innerHTML = '';
+  if (!cat || !CATEGORIES_DATA[cat]) {
+    var opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = 'Select category first';
+    subSel.appendChild(opt);
+    return;
+  }
+  var placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = 'Select subcategory';
+  subSel.appendChild(placeholder);
+  var subs = CATEGORIES_DATA[cat];
+  for (var i = 0; i < subs.length; i++) {
+    var opt2 = document.createElement('option');
+    opt2.value = subs[i];
+    opt2.textContent = subs[i];
+    subSel.appendChild(opt2);
+  }
+}
+
+// ============================================================
+//  MODAL HELPERS
+// ============================================================
+function openModal(id) {
+  var el = document.getElementById(id);
+  if (el) {
+    el.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeModal(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+  var anyOpen = document.querySelectorAll('.modal-overlay.open').length > 0;
+  if (!anyOpen) document.body.style.overflow = '';
+}
+
+function handleOverlayClick(event, id) {
+  if (event.target === document.getElementById(id)) {
+    closeModal(id);
+  }
+}
+
+// ============================================================
+//  MOBILE SIDEBAR
+// ============================================================
+function toggleSidebar() {
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('show');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
+}
+
+// ============================================================
+//  BOOT
+// ============================================================
+document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
