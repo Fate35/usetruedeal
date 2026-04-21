@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile — UseTrueDeal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#fff;--bg-subtle:#F7F8FA;--bg-muted:#F1F3F7;--bg-card:#fff;
+  --border:#E4E8F0;--border-mid:#C8D0E0;
+  --text-primary:#0A1628;--text-secondary:#344260;--text-muted:#6B7A96;--text-label:#9099AE;
+  --accent:#1845D1;--accent-soft:#EAF0FF;--accent-vivid:#2050E8;
+  --success:#026B40;--success-light:#E3FAF0;--success-border:#A8E8CA;
+  --warning:#92400E;--warning-light:#FFFBEB;--warning-border:#FCD34D;
+  --danger:#9D1B0D;--danger-light:#FFF0EE;--danger-border:#F5C0B8;
+  --orange:#9A3900;--orange-light:#FEF3E8;--orange-border:#F6C89A;
+  --r-sm:6px;--r-md:10px;--r-lg:14px;--r-xl:18px;--r-2xl:24px;--r-full:9999px;
+  --ease:cubic-bezier(.4,0,.2,1);--ease-spring:cubic-bezier(.22,1,.36,1);
+  --t:.15s;--t-slow:.26s;
+  --shadow-xs:0 1px 2px rgba(10,22,40,.05);
+  --shadow-sm:0 1px 3px rgba(10,22,40,.07),0 0 0 1px rgba(10,22,40,.04);
+  --shadow-card:0 0 0 1px rgba(10,22,40,.06),0 2px 8px rgba(10,22,40,.06);
+  --shadow-hover:0 0 0 1.5px rgba(24,69,209,.18),0 6px 24px rgba(24,69,209,.1);
+  --shadow-header:0 1px 0 var(--border),0 2px 8px rgba(10,22,40,.04);
+  --hh:56px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;font-size:13.5px;line-height:1.55;font-weight:400;letter-spacing:.003em;color:var(--text-primary);background:var(--bg-subtle);-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+
+/* ── HEADER ── */
+.site-header{position:sticky;top:0;z-index:200;height:var(--hh);background:rgba(255,255,255,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);box-shadow:var(--shadow-header);display:flex;align-items:center;padding:0 20px;gap:0}
+.hdr-logo{font-size:14.5px;font-weight:700;letter-spacing:-.012em;color:var(--text-primary);flex-shrink:0;margin-right:20px}
+.hdr-logo span{color:var(--accent)}
+.hdr-nav{display:flex;align-items:center;gap:2px;flex:1}
+.hdr-nav a{height:32px;padding:0 10px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text-muted);border-radius:var(--r-md);transition:color var(--t) var(--ease),background var(--t) var(--ease);white-space:nowrap}
+.hdr-nav a:hover{color:var(--text-primary);background:var(--bg-muted)}
+.hdr-nav a.active{color:var(--accent);background:var(--accent-soft)}
+.hdr-nav a svg{flex-shrink:0}
+.hdr-sep{width:1px;height:18px;background:var(--border);margin:0 8px;flex-shrink:0}
+.hdr-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.btn-hdr{height:30px;padding:0 12px;border-radius:var(--r-full);border:1.5px solid var(--border-mid);font-size:12px;font-weight:500;color:var(--text-secondary);display:flex;align-items:center;gap:5px;transition:all var(--t) var(--ease);white-space:nowrap}
+.btn-hdr:hover{background:var(--bg-muted);border-color:var(--border)}
+.btn-hdr.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-hdr.primary:hover{background:var(--accent-vivid);border-color:var(--accent-vivid)}
+.btn-hdr.danger:hover{color:var(--danger);border-color:var(--danger-border);background:var(--danger-light)}
+.hdr-avatar{width:28px;height:28px;border-radius:50%;background:var(--bg-muted);border:1.5px solid var(--border);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-muted);flex-shrink:0}
+.hdr-avatar img{width:100%;height:100%;object-fit:cover}
+
+/* ── COVER ── */
+.profile-cover{height:160px;background:linear-gradient(130deg,#0C2DA8 0%,#1845D1 45%,#2563EB 75%,#0EA5E9 100%);position:relative;overflow:hidden}
+.profile-cover::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 40%,rgba(255,255,255,.08),transparent)}
+.profile-cover::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 22px)}
+
+/* ── LAYOUT ── */
+.page-outer{max-width:1080px;margin:0 auto;padding:0 16px 64px}
+.page-grid{display:grid;grid-template-columns:1fr 268px;gap:20px;align-items:start}
+
+/* ── PROFILE HEADER CARD ── */
+.profile-hdr-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-xl);padding:0 0 16px;margin-top:-52px;box-shadow:var(--shadow-sm);overflow:visible;position:relative;z-index:2}
+.phc-top{padding:0 20px;display:flex;align-items:flex-end;gap:14px;padding-top:0;margin-top:-4px}
+.profile-av{width:80px;height:80px;border-radius:50%;border:3.5px solid #fff;box-shadow:0 0 0 1px var(--border),0 4px 14px rgba(10,22,40,.12);background:var(--bg-muted);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--text-muted);flex-shrink:0;margin-top:-28px;position:relative;z-index:3}
+.profile-av img{width:100%;height:100%;object-fit:cover}
+.phc-info{flex:1;padding-bottom:4px;min-width:0}
+.phc-name-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:2px}
+.phc-name{font-size:18px;font-weight:700;letter-spacing:-.016em;line-height:1.2}
+.phc-badges{display:flex;gap:4px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:3px;height:18px;padding:0 6px;border-radius:var(--r-full);font-size:10px;font-weight:600}
+.badge-verified{background:var(--success-light);color:var(--success);border:1px solid var(--success-border)}
+.badge-top{background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE}
+.badge-pro{background:var(--orange-light);color:var(--orange);border:1px solid var(--orange-border)}
+.phc-company{font-size:12px;color:var(--text-muted);margin-bottom:4px}
+.phc-bio{font-size:13px;color:var(--text-secondary);line-height:1.6;max-width:480px}
+.phc-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;padding-bottom:4px;flex-wrap:wrap}
+.btn-action{height:32px;padding:0 14px;border-radius:var(--r-full);font-size:12.5px;font-weight:500;display:flex;align-items:center;gap:5px;transition:all var(--t) var(--ease)}
+.btn-primary{background:var(--accent);color:#fff;border:1.5px solid var(--accent)}
+.btn-primary:hover{background:var(--accent-vivid)}
+.btn-secondary{background:var(--bg);color:var(--text-secondary);border:1.5px solid var(--border-mid)}
+.btn-secondary:hover{background:var(--bg-muted)}
+.phc-meta{display:flex;gap:0;border-top:1px solid var(--border);margin-top:14px;flex-wrap:wrap}
+.phc-meta-item{display:flex;flex-direction:column;align-items:center;padding:10px 14px;flex:1;min-width:80px;border-right:1px solid var(--border);cursor:default}
+.phc-meta-item:last-child{border-right:none}
+.phc-meta-num{font-size:16px;font-weight:700;letter-spacing:-.014em;line-height:1}
+.phc-meta-lbl{font-size:10.5px;color:var(--text-muted);margin-top:2px;font-weight:500}
+.phc-details{display:flex;gap:14px;padding:10px 20px 0;flex-wrap:wrap}
+.phc-detail{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-muted)}
+.phc-detail svg{flex-shrink:0;color:var(--text-label)}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#22C55E;flex-shrink:0}
+.status-dot.away{background:#F59E0B}
+
+/* ── SECTION TABS ── */
+.section-tabs{display:flex;border-bottom:1.5px solid var(--border);background:var(--bg-card);border-radius:var(--r-xl) var(--r-xl) 0 0;overflow:hidden;margin-bottom:0}
+.sec-tab{height:42px;padding:0 14px;font-size:13px;font-weight:500;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-1.5px;transition:all var(--t) var(--ease);display:flex;align-items:center;gap:5px;white-space:nowrap}
+.sec-tab:hover{color:var(--text-primary)}
+.sec-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.sec-tab .tab-count{font-size:10.5px;font-weight:600;padding:1px 5px;border-radius:var(--r-full);background:var(--bg-muted);color:var(--text-muted)}
+.sec-tab.active .tab-count{background:var(--accent-soft);color:var(--accent)}
+.tab-panel{display:none;background:var(--bg-card);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r-xl) var(--r-xl);padding:18px}
+.tab-panel.active{display:block}
+
+/* ── FILTERS BAR ── */
+.filters-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.filter-chips{display:flex;gap:4px}
+.chip{height:28px;padding:0 10px;border-radius:var(--r-full);border:1.5px solid var(--border);font-size:12px;font-weight:500;color:var(--text-muted);transition:all var(--t) var(--ease);cursor:pointer;background:var(--bg)}
+.chip:hover{border-color:var(--border-mid);color:var(--text-secondary)}
+.chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.filters-spacer{flex:1}
+.sort-select{height:28px;padding:0 8px;border-radius:var(--r-md);border:1.5px solid var(--border);font-size:12px;font-weight:500;color:var(--text-secondary);font-family:inherit;background:var(--bg);cursor:pointer;outline:none}
+
+/* ── LISTINGS GRID ── */
+.listings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.listing-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;cursor:pointer;transition:box-shadow var(--t-slow) var(--ease),transform var(--t-slow) var(--ease-spring)}
+.listing-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
+.lc-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--bg-muted)}
+.lc-img-ph{width:100%;aspect-ratio:4/3;background:var(--bg-muted);display:flex;align-items:center;justify-content:center;color:var(--border-mid)}
+.lc-body{padding:10px}
+.lc-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.lc-price{font-size:14.5px;font-weight:700;letter-spacing:-.01em;color:var(--text-primary)}
+.lc-meta{font-size:11.5px;color:var(--text-muted);margin-top:3px;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.lc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.lbadge{display:inline-flex;align-items:center;height:18px;padding:0 6px;border-radius:var(--r-full);font-size:10px;font-weight:600}
+.lbadge-active{background:var(--success-light);color:var(--success);border:1px solid var(--success-border)}
+.lbadge-sold{background:var(--bg-muted);color:var(--text-muted);border:1px solid var(--border)}
+.lbadge-draft{background:var(--warning-light);color:var(--warning);border:1px solid var(--warning-border)}
+.lbadge-flagged{background:var(--orange-light);color:var(--orange);border:1px solid var(--orange-border)}
+.lc-date{font-size:10.5px;color:var(--text-label)}
+
+/* ── ABOUT TAB ── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.about-section{background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px}
+.about-section-full{grid-column:1/-1}
+.about-title{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.about-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)}
+.about-row:last-child{border-bottom:none}
+.about-key{font-size:12.5px;font-weight:500;color:var(--text-muted);min-width:120px;flex-shrink:0}
+.about-val{font-size:12.5px;color:var(--text-secondary)}
+.trust-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.trust-badge{display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--bg);font-size:12px;font-weight:500}
+.trust-badge svg{flex-shrink:0}
+.trust-badge.earned{border-color:var(--success-border);background:var(--success-light);color:var(--success)}
+.trust-badge.earned svg{color:var(--success)}
+
+/* ── REVIEWS TAB ── */
+.review-summary{display:flex;gap:20px;align-items:center;padding:14px;background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:16px}
+.review-big-num{font-size:40px;font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--text-primary)}
+.review-stars{display:flex;gap:2px;margin:4px 0}
+.star{color:#F59E0B;font-size:14px}
+.star.empty{color:var(--border-mid)}
+.review-count{font-size:12px;color:var(--text-muted)}
+.review-bars{flex:1}
+.rbar-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.rbar-lbl{font-size:11px;color:var(--text-muted);width:36px;flex-shrink:0;text-align:right}
+.rbar-track{flex:1;height:5px;border-radius:var(--r-full);background:var(--bg-muted);overflow:hidden}
+.rbar-fill{height:100%;border-radius:var(--r-full);background:#F59E0B}
+.rbar-cnt{font-size:11px;color:var(--text-muted);width:20px;flex-shrink:0}
+.review-cards{display:flex;flex-direction:column;gap:10px}
+.review-card{background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px}
+.rc-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.rc-av{width:30px;height:30px;border-radius:50%;background:var(--bg-muted);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);flex-shrink:0;overflow:hidden}
+.rc-av img{width:100%;height:100%;object-fit:cover}
+.rc-name{font-size:13px;font-weight:600}
+.rc-date{font-size:11.5px;color:var(--text-label);margin-left:auto}
+.rc-stars{display:flex;gap:2px;font-size:12px}
+.rc-body{font-size:13px;color:var(--text-secondary);line-height:1.6}
+.rc-item{font-size:12px;color:var(--text-muted);margin-top:4px;display:flex;align-items:center;gap:4px}
+
+/* ── ACTIVITY TAB ── */
+.activity-feed{display:flex;flex-direction:column;gap:0}
+.af-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.af-item:last-child{border-bottom:none}
+.af-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.af-icon.green{background:var(--success-light);color:var(--success)}
+.af-icon.blue{background:var(--accent-soft);color:var(--accent)}
+.af-icon.orange{background:var(--orange-light);color:var(--orange)}
+.af-icon.gray{background:var(--bg-muted);color:var(--text-muted)}
+.af-content{flex:1;min-width:0}
+.af-title{font-size:13px;font-weight:500;color:var(--text-primary)}
+.af-sub{font-size:12px;color:var(--text-muted);margin-top:1px}
+.af-time{font-size:11.5px;color:var(--text-label);flex-shrink:0;margin-top:2px}
+
+/* ── SAVED TAB ── */
+.saved-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+
+/* ── SIDE PANEL ── */
+.side-panel{display:flex;flex-direction:column;gap:14px}
+.sp-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-xl);padding:14px;box-shadow:var(--shadow-xs)}
+.sp-title{font-size:11.5px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+/* ── SIDEBAR: keep only what's used ── */
+.qa-list{display:flex;flex-direction:column;gap:2px}
+.qa-btn{display:flex;align-items:center;gap:9px;width:100%;padding:8px 9px;border-radius:var(--r-md);font-size:13px;font-weight:500;color:var(--text-secondary);transition:background var(--t) var(--ease),color var(--t) var(--ease);text-align:left;text-decoration:none}
+.qa-btn:hover{background:var(--bg-muted);color:var(--text-primary)}
+.qa-btn svg{flex-shrink:0;color:var(--text-label)}
+
+/* messages preview */
+.msg-list{display:flex;flex-direction:column}
+.msg-item{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity var(--t)}
+.msg-item:last-child{border-bottom:none}
+.msg-item:hover{opacity:.8}
+.msg-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#2563EB);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden}
+.msg-av img{width:100%;height:100%;object-fit:cover}
+.msg-body{flex:1;min-width:0}
+.msg-name{font-size:12.5px;font-weight:600;color:var(--text-primary);line-height:1.2}
+.msg-preview{font-size:11.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.msg-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.msg-time{font-size:10.5px;color:var(--text-label)}
+.msg-unread{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+
+/* recently viewed */
+.rv-list{display:flex;flex-direction:column;gap:1px}
+.rv-item{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity var(--t)}
+.rv-item:last-child{border-bottom:none}
+.rv-item:hover{opacity:.75}
+.rv-thumb{width:40px;height:40px;border-radius:var(--r-sm);object-fit:cover;background:var(--bg-muted);flex-shrink:0;border:1px solid var(--border)}
+.rv-info{flex:1;min-width:0}
+.rv-title{font-size:12.5px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.rv-price{font-size:12px;color:var(--accent);font-weight:600;margin-top:2px}
+
+/* sidebar link */
+.sp-link{display:block;font-size:11.5px;font-weight:600;color:var(--accent);text-decoration:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);text-align:center}
+.sp-link:hover{text-decoration:underline}
+
+/* ── PROFILE SETTINGS TAB ── */
+.ps-layout{display:flex;flex-direction:column;gap:0}
+.ps-section{padding:20px 0;border-bottom:1px solid var(--border)}
+.ps-section:last-of-type{border-bottom:none}
+.ps-section-title{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px}
+.ps-avatar-row{display:flex;align-items:flex-start;gap:16px}
+.ps-av-preview{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#2563EB);border:2.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0}
+.ps-av-preview img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.ps-av-info{flex:1;min-width:0}
+.ps-fields{display:flex;flex-direction:column;gap:14px}
+.ps-field{display:flex;flex-direction:column;gap:5px}
+.ps-field label{font-size:12px;font-weight:500;color:var(--text-secondary)}
+.ps-optional{font-size:11px;font-weight:400;color:var(--text-label);margin-left:3px}
+.ps-input{height:38px;padding:0 11px;border-radius:var(--r-md);border:1.5px solid var(--border-mid);font-family:inherit;font-size:13px;color:var(--text-primary);outline:none;background:var(--bg);transition:border-color var(--t) var(--ease),box-shadow var(--t) var(--ease);width:100%}
+.ps-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(24,69,209,.1)}
+.ps-input-prefix{position:relative}
+.ps-prefix{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:500;color:var(--text-muted);pointer-events:none;line-height:1}
+.ps-input-has-prefix{padding-left:22px}
+.ps-textarea{padding:10px 11px;border-radius:var(--r-md);border:1.5px solid var(--border-mid);font-family:inherit;font-size:13px;color:var(--text-primary);outline:none;background:var(--bg);resize:none;min-height:90px;line-height:1.6;width:100%;transition:border-color var(--t) var(--ease),box-shadow var(--t) var(--ease);overflow:hidden}
+.ps-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(24,69,209,.1)}
+.ps-char-count{font-size:11px;color:var(--text-label);text-align:right;margin-top:3px}
+.ps-btn-ghost{height:34px;padding:0 12px;border-radius:var(--r-full);border:1.5px solid var(--border-mid);font-size:12px;font-weight:500;color:var(--text-secondary);background:var(--bg);cursor:pointer;transition:all var(--t) var(--ease);white-space:nowrap;flex-shrink:0;font-family:inherit}
+.ps-btn-ghost:hover{background:var(--bg-muted)}
+.ps-actions{padding-top:20px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.ps-save-btn{height:38px;padding:0 24px;border-radius:var(--r-full);background:var(--accent);color:#fff;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:background var(--t) var(--ease);font-family:inherit}
+.ps-save-btn:hover{background:var(--accent-vivid)}
+.ps-save-btn:disabled{background:var(--accent-mid);cursor:not-allowed}
+.ps-msg{font-size:12px;padding:7px 11px;border-radius:var(--r-sm);display:none}
+.ps-msg.success{background:var(--success-light);color:var(--success);border:1px solid var(--success-border)}
+.ps-msg.error{background:var(--danger-light);color:var(--danger);border:1px solid var(--danger-border)}
+
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;right:20px;z-index:1000;background:var(--text-primary);color:#fff;font-size:12.5px;font-weight:500;height:38px;padding:0 14px;border-radius:var(--r-full);display:flex;align-items:center;gap:7px;box-shadow:0 4px 20px rgba(10,22,40,.22);opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .18s var(--ease),transform .18s var(--ease-spring)}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.toast.success .toast-dot{background:#4ADE80}
+.toast.danger .toast-dot{background:#F87171}
+
+/* ── AUTH GATE ── */
+#authGate{position:fixed;inset:0;background:var(--bg-subtle);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:10px;color:var(--text-muted);font-size:14px}
+.gate-spinner{width:22px;height:22px;border:2px solid var(--border-mid);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:16px;height:16px;border:2px solid var(--border-mid);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:13px}
+.empty-state svg{margin:0 auto 10px;color:var(--border-mid)}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.animate{animation:fadeUp .25s var(--ease-spring) both}
+
+/* ── RESPONSIVE ── */
+@media(max-width:820px){
+  .page-grid{grid-template-columns:1fr}
+  .side-panel{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .profile-cover{height:120px}
+  .hdr-nav a span{display:none}
+  .hdr-nav .hdr-sep{display:none}
+}
+@media(max-width:560px){
+  .about-grid{grid-template-columns:1fr}
+  .side-panel{grid-template-columns:1fr}
+  .listings-grid{grid-template-columns:repeat(2,1fr)}
+  .btn-hdr span{display:none}
+  .phc-actions{flex-wrap:wrap}
+}
+
+/* ── PROFILE PANEL ── */
+/* Avatar trigger button */
+.pp-avatar-btn{position:relative;width:32px;height:32px;border-radius:50%;border:none;padding:0;cursor:pointer;background:none;flex-shrink:0;transition:transform .13s ease}
+.pp-avatar-btn:hover{transform:scale(1.07)}
+.pp-avatar-btn:active{transform:scale(.95)}
+.pp-hdr-av{width:32px;height:32px;border-radius:50%;border:2px solid var(--border-mid);background:linear-gradient(135deg,var(--accent),#2563EB);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;overflow:hidden;transition:border-color .13s,box-shadow .13s}
+.pp-avatar-btn:hover .pp-hdr-av,.pp-avatar-btn[aria-expanded=true] .pp-hdr-av{border-color:var(--accent);box-shadow:0 0 0 3px rgba(24,69,209,.15)}
+.pp-hdr-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+/* Notification dot on avatar */
+.pp-hdr-notif-dot{position:absolute;top:0;right:0;width:9px;height:9px;border-radius:50%;background:#EF4444;border:2px solid #fff;display:none}
+.pp-hdr-notif-dot.visible{display:block}
+
+/* Backdrop */
+.pp-backdrop{position:fixed;inset:0;z-index:1199;display:none}
+.pp-backdrop.open{display:block}
+
+/* Panel container */
+.pp-panel{
+  position:fixed;top:62px;right:14px;z-index:1200;
+  width:248px;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 0 0 1px rgba(10,22,40,.07),0 4px 6px rgba(10,22,40,.04),0 12px 32px rgba(10,22,40,.12);
+  overflow:hidden;
+  transform-origin:top right;
+  transform:scale(.94) translateY(-6px);
+  opacity:0;pointer-events:none;
+  transition:transform .2s cubic-bezier(.22,1,.36,1),opacity .16s ease
+}
+.pp-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+
+/* User identity header */
+.pp-identity{display:flex;align-items:center;gap:10px;padding:14px 14px 12px;border-bottom:1px solid #F2F4F8}
+.pp-id-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1845D1,#2563EB);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0;border:2px solid #E8EDF8}
+.pp-id-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.pp-id-info{flex:1;min-width:0}
+.pp-id-name{font-size:13px;font-weight:600;color:#0A1628;letter-spacing:-.011em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25}
+.pp-id-sub{font-size:11.5px;color:#6B7A96;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-id-edit{width:26px;height:26px;border-radius:50%;border:1.5px solid #E4E8F0;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:#fff;transition:background .12s,border-color .12s;color:#6B7A96}
+.pp-id-edit:hover{background:#EAF0FF;border-color:#AFC8FA;color:#1845D1}
+
+/* Menu list */
+.pp-menu{padding:5px 5px}
+.pp-menu-item{
+  display:flex;align-items:center;gap:10px;
+  height:36px;padding:0 9px;
+  border-radius:8px;
+  font-size:13px;font-weight:500;
+  color:#1A2B4A;
+  cursor:pointer;
+  transition:background .1s;
+  text-decoration:none;border:none;background:none;font-family:inherit;
+  width:100%;text-align:left;
+  position:relative;
+}
+.pp-menu-item:hover{background:#F5F6FA}
+.pp-menu-item svg{flex-shrink:0;color:#8899B4;transition:color .1s}
+.pp-menu-item:hover svg{color:#1845D1}
+.pp-menu-item.danger{color:#C0392B}
+.pp-menu-item.danger svg{color:#E57373}
+.pp-menu-item.danger:hover{background:#FFF5F5}
+/* Right-side content (badge or arrow) */
+.pp-menu-right{margin-left:auto;display:flex;align-items:center;gap:4px}
+.pp-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9999px;background:#EF4444;color:#fff;font-size:10px;font-weight:700;line-height:1}
+.pp-chevron{color:#C8D0E0}
+
+/* Divider */
+.pp-divider{height:1px;background:#F0F2F8;margin:4px 6px}
+
+/* Sub-panel (edit profile, messages, notifications) */
+.pp-sub{display:none;flex-direction:column}
+.pp-sub.active{display:flex}
+.pp-sub-hdr{display:flex;align-items:center;gap:8px;padding:11px 12px 9px;border-bottom:1px solid #F2F4F8}
+.pp-sub-back{width:26px;height:26px;border-radius:50%;border:none;background:#F4F6FB;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .12s;color:#344260}
+.pp-sub-back:hover{background:#EAF0FF;color:#1845D1}
+.pp-sub-title{font-size:13px;font-weight:600;color:#0A1628;letter-spacing:-.01em}
+.pp-sub-body{overflow-y:auto;padding:8px 11px 11px;max-height:340px}
+.pp-sub-body::-webkit-scrollbar{width:3px}
+.pp-sub-body::-webkit-scrollbar-thumb{background:#DDE3EF;border-radius:9999px}
+
+/* Inbox item */
+.pp-inbox-item{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid #F2F4F8;cursor:pointer;align-items:flex-start}
+.pp-inbox-item:last-child{border-bottom:none}
+.pp-inbox-item:hover .pp-inbox-name{color:#1845D1}
+.pp-inbox-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;border:1.5px solid #E8EDF8;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;overflow:hidden}
+.pp-inbox-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.pp-inbox-body{flex:1;min-width:0}
+.pp-inbox-name{font-size:12.5px;font-weight:600;color:#0A1628;transition:color .12s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-inbox-preview{font-size:11.5px;color:#6B7A96;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.pp-inbox-meta{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.pp-inbox-time{font-size:10.5px;color:#9099AE}
+.pp-unread-dot{width:7px;height:7px;border-radius:50%;background:#EF4444}
+
+/* Notification item */
+.pp-notif-item{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid #F2F4F8;align-items:flex-start}
+.pp-notif-item:last-child{border-bottom:none}
+.pp-notif-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.pp-notif-icon.blue{background:#EAF0FF;color:#1845D1}
+.pp-notif-icon.green{background:#E3FAF0;color:#026B40}
+.pp-notif-icon.orange{background:#FEF3E8;color:#9A3900}
+.pp-notif-text{font-size:12px;color:#344260;line-height:1.5;flex:1}
+.pp-notif-time{font-size:10px;color:#9099AE;flex-shrink:0;margin-top:2px}
+.pp-notif-unread-bar{width:3px;border-radius:9999px;background:#1845D1;flex-shrink:0;align-self:stretch;margin-top:2px;margin-bottom:2px}
+
+/* Mark-all-read link */
+.pp-mark-read{display:block;text-align:right;font-size:11.5px;font-weight:500;color:#1845D1;padding:6px 0 2px;cursor:pointer;border:none;background:none;font-family:inherit;width:100%}
+.pp-mark-read:hover{text-decoration:underline}
+
+/* Empty state */
+.pp-empty{text-align:center;padding:24px 10px 20px;color:#9099AE;font-size:12px}
+.pp-empty svg{margin:0 auto 8px;color:#C8D0E0}
+.pp-empty strong{display:block;font-size:13px;font-weight:600;color:#344260;margin-bottom:2px}
+
+/* Edit profile sub-panel fields */
+.pp-field{margin-bottom:9px}
+.pp-field label{display:block;font-size:11px;font-weight:500;color:#4E6180;margin-bottom:3px}
+.pp-field input,.pp-field textarea,.pp-field select{width:100%;padding:0 9px;border:1.5px solid #DDE3EF;border-radius:7px;font-family:inherit;font-size:12.5px;color:#0A1628;outline:none;background:#fff;transition:border-color .13s}
+.pp-field input,.pp-field select{height:34px}
+.pp-field textarea{padding:7px 9px;resize:vertical;min-height:54px;line-height:1.5}
+.pp-field input:focus,.pp-field textarea:focus,.pp-field select:focus{border-color:#1845D1;box-shadow:0 0 0 2.5px rgba(24,69,209,.1)}
+.pp-save-btn{width:100%;height:32px;border-radius:9999px;background:#1845D1;color:#fff;font-size:12px;font-weight:600;border:none;cursor:pointer;transition:background .13s;margin-top:4px}
+.pp-save-btn:hover{background:#2050E8}
+.pp-save-btn:disabled{background:#AFC8FA;cursor:not-allowed}
+.pp-msg{font-size:11.5px;padding:6px 9px;border-radius:6px;margin-bottom:7px;display:none}
+.pp-msg.success{background:#E3FAF0;color:#026B40;border:1px solid #A8E8CA}
+.pp-msg.error{background:#FFF0EE;color:#9D1B0D;border:1px solid #F5C0B8}
+.pp-avatar-upload{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.pp-av-preview{width:38px;height:38px;border-radius:50%;border:2px solid #DDE3EF;background:linear-gradient(135deg,#1845D1,#2563EB);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0}
+.pp-av-preview img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+@media(max-width:400px){.pp-panel{right:8px;left:8px;width:auto}}
+</style>
+</head>
+<body>
+
+<div id="authGate"><div class="gate-spinner"></div>Loading your profile…</div>
+
+<div id="pageContent" style="display:none">
+
+<!-- ── HEADER ── -->
+<header class="site-header">
+  <a href="index.html" class="hdr-logo">Use<span>True</span>Deal</a>
+  <nav class="hdr-nav">
+    <a href="index.html">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5L8 2l6 4.5V14a1 1 0 01-1 1H3a1 1 0 01-1-1V6.5z"/></svg>
+      <span>Home</span>
+    </a>
+    <a href="profile.html" class="active">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5"/></svg>
+      <span>Profile</span>
+    </a>
+    <a href="#" onclick="switchTab('listings',document.querySelector('[data-tab=listings]'));return false">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+      <span>My Listings</span>
+    </a>
+    <a href="inbox.html">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 10.67A2 2 0 0012.11 12H10a2 2 0 01-2-2V5a2 2 0 012-2h4a2 2 0 012 2v3.89z"/><path d="M6 4H4a2 2 0 00-2 2v5a2 2 0 002 2h.5l1.5 2 1.5-2H8a2 2 0 002-2v-1"/></svg>
+      <span>Messages</span>
+    </a>
+    <div class="hdr-sep"></div>
+    <a href="#" onclick="switchTab('settings',document.getElementById('settingsTabBtn'));return false">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg>
+      <span>Profile Settings</span>
+    </a>
+  </nav>
+  <div class="hdr-right">
+    <button class="btn-hdr" id="hdrShareBtn">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="2.5" r="1.5"/><circle cx="2.5" cy="7" r="1.5"/><circle cx="11" cy="11.5" r="1.5"/><path d="M4 7.7l5.5 3.1M9.5 3.2L4 6.3"/></svg>
+      <span>Share</span>
+    </button>
+    <div class="hdr-sep"></div>
+    <button id="pp-trigger" class="pp-avatar-btn" onclick="toggleProfilePanel(event)" aria-label="Account menu" style="position:relative">
+      <div id="pp-hdr-avatar" class="pp-hdr-av"></div>
+      <div id="pp-hdr-notif-dot" class="pp-hdr-notif-dot"></div>
+    </button>
+  </div>
+</header>
+
+<!-- ── COVER ── -->
+<div class="profile-cover"></div>
+
+<!-- ── PAGE ── -->
+<div class="page-outer">
+  <div class="page-grid">
+
+    <!-- ── MAIN COLUMN ── -->
+    <div>
+
+      <!-- Profile header card -->
+      <div class="profile-hdr-card animate">
+        <div class="phc-top">
+          <div class="profile-av" id="profileAv"></div>
+          <div class="phc-info">
+            <div class="phc-name-row">
+              <span class="phc-name" id="profileName"></span>
+              <div class="phc-badges">
+                <span class="badge badge-verified">
+                  <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 5l2 2 4-4"/></svg>
+                  Verified
+                </span>
+                <span class="badge badge-top">Top Seller</span>
+              </div>
+            </div>
+            <div class="phc-company" id="profileCompany"></div>
+            <div class="phc-bio" id="profileBio"></div>
+          </div>
+          <div class="phc-actions">
+            <button class="btn-action btn-primary" onclick="switchTab('settings',document.getElementById('settingsTabBtn'))">
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 2l2 2-7 7H3v-2L10 2z"/></svg>
+              Edit Profile
+            </button>
+            <button class="btn-action btn-secondary" id="shareProfileBtn">
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="2.5" r="1.5"/><circle cx="2.5" cy="7" r="1.5"/><circle cx="11" cy="11.5" r="1.5"/><path d="M4 7.7l5.5 3.1M9.5 3.2L4 6.3"/></svg>
+              Share
+            </button>
+            <button class="btn-action btn-secondary" onclick="openCreateListing()">
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 1v12M1 7h12"/></svg>
+              Create Listing
+            </button>
+          </div>
+        </div>
+
+        <div class="phc-details" id="profileDetails">
+          <div class="phc-detail">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Active now</span>
+          </div>
+          <div class="phc-detail">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="11" rx="2"/><path d="M2 7h12M5 1v4M11 1v4"/></svg>
+            <span id="profileJoined"></span>
+          </div>
+          <div class="phc-detail" id="locationDetail" style="display:none">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14S3 9.5 3 6a5 5 0 0110 0c0 3.5-5 8-5 8z"/><circle cx="8" cy="6" r="1.5"/></svg>
+            <span id="locationText"></span>
+          </div>
+          <div class="phc-detail">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+            <span>Responds within 2 hours</span>
+          </div>
+        </div>
+
+        <div class="phc-meta">
+          <div class="phc-meta-item">
+            <div class="phc-meta-num" id="metaListings">0</div>
+            <div class="phc-meta-lbl">Listings</div>
+          </div>
+          <div class="phc-meta-item">
+            <div class="phc-meta-num" id="metaActive">0</div>
+            <div class="phc-meta-lbl">Active</div>
+          </div>
+          <div class="phc-meta-item">
+            <div class="phc-meta-num" id="metaSold">0</div>
+            <div class="phc-meta-lbl">Sold</div>
+          </div>
+          <div class="phc-meta-item">
+            <div class="phc-meta-num" id="metaFollowers">0</div>
+            <div class="phc-meta-lbl">Followers</div>
+          </div>
+          <div class="phc-meta-item">
+            <div class="phc-meta-num" id="metaViews">—</div>
+            <div class="phc-meta-lbl">Profile views</div>
+          </div>
+          <div class="phc-meta-item">
+            <div class="phc-meta-num" id="metaRating">4.9</div>
+            <div class="phc-meta-lbl">Rating</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section tabs -->
+      <div style="margin-top:16px">
+        <div class="section-tabs" id="sectionTabs">
+          <button class="sec-tab active" data-tab="listings" onclick="switchTab('listings',this)">
+            Listings <span class="tab-count" id="tabCountListings">0</span>
+          </button>
+          <button class="sec-tab" data-tab="settings" onclick="switchTab('settings',this)" id="settingsTabBtn">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg>
+            Profile Settings
+          </button>
+        </div>
+
+        <!-- Listings tab -->
+        <div class="tab-panel active" id="panel-listings">
+          <div class="filters-bar">
+            <div class="filter-chips">
+              <button class="chip active" data-filter="all" onclick="filterListings('all',this)">All</button>
+              <button class="chip" data-filter="active" onclick="filterListings('active',this)">Active</button>
+              <button class="chip" data-filter="sold" onclick="filterListings('sold',this)">Sold</button>
+              <button class="chip" data-filter="draft" onclick="filterListings('draft',this)">Draft</button>
+            </div>
+            <div class="filters-spacer"></div>
+            <select class="sort-select" id="sortSelect" onchange="sortListings(this.value)">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+          </div>
+          <div class="listings-grid" id="listingsGrid">
+            <div style="grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:8px;padding:40px;color:var(--text-muted)">
+              <div class="spinner"></div> Loading listings…
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Profile Settings tab -->
+        <div class="tab-panel" id="panel-settings">
+          <div class="ps-layout">
+
+            <!-- Avatar section -->
+            <div class="ps-section">
+              <div class="ps-section-title">Profile Photo</div>
+              <div class="ps-avatar-row">
+                <div class="ps-av-preview" id="psAvPreview"></div>
+                <div class="ps-av-info">
+                  <div style="font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px">Profile picture</div>
+                  <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Paste a public image URL to update your avatar</div>
+                  <div style="display:flex;gap:8px;align-items:center">
+                    <input type="url" id="psAvUrl" placeholder="https://…" class="ps-input" style="flex:1" oninput="psPreviewAvatar(this.value)">
+                    <button class="ps-btn-ghost" onclick="psAvUrl.value='';psPreviewAvatar('')">Remove</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Identity section -->
+            <div class="ps-section">
+              <div class="ps-section-title">Identity</div>
+              <div class="ps-fields">
+                <div class="ps-field">
+                  <label>Display Name</label>
+                  <input type="text" id="psName" placeholder="Your full name" class="ps-input">
+                </div>
+                <div class="ps-field">
+                  <label>Username <span class="ps-optional">optional</span></label>
+                  <div class="ps-input-prefix">
+                    <span class="ps-prefix">@</span>
+                    <input type="text" id="psUsername" placeholder="yourhandle" class="ps-input ps-input-has-prefix">
+                  </div>
+                </div>
+                <div class="ps-field">
+                  <label>Company Name <span class="ps-optional">optional</span></label>
+                  <input type="text" id="psCompany" placeholder="Your business or brand" class="ps-input">
+                </div>
+              </div>
+            </div>
+
+            <!-- About section -->
+            <div class="ps-section">
+              <div class="ps-section-title">About</div>
+              <div class="ps-fields">
+                <div class="ps-field">
+                  <label>Bio / Description</label>
+                  <textarea id="psBio" class="ps-textarea" placeholder="Tell buyers a bit about yourself and what you sell…" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+                  <div class="ps-char-count"><span id="psBioCount">0</span> / 240</div>
+                </div>
+                <div class="ps-field">
+                  <label>Location <span class="ps-optional">optional</span></label>
+                  <div style="position:relative">
+                    <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-label)" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14S3 9.5 3 6a5 5 0 0110 0c0 3.5-5 8-5 8z"/><circle cx="8" cy="6" r="1.5"/></svg>
+                    <input type="text" id="psLocation" placeholder="e.g. San Francisco, CA" class="ps-input" style="padding-left:30px">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Save button -->
+            <div class="ps-actions">
+              <div class="ps-msg" id="psSaveMsg"></div>
+              <button class="ps-save-btn" id="psSaveBtn" onclick="saveProfileSettings()">Save changes</button>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /tabs wrapper -->
+    </div><!-- /main column -->
+
+    <!-- ── SIDE PANEL ── -->
+    <div class="side-panel">
+
+      <!-- Messages -->
+      <div class="sp-card animate" style="animation-delay:.05s">
+        <div class="sp-title">Messages</div>
+        <div class="msg-list" id="sidebarMsgList">
+          <div style="padding:16px 0;text-align:center;color:var(--text-label);font-size:12px">Loading…</div>
+        </div>
+        <a href="inbox.html" class="sp-link">View all messages</a>
+      </div>
+
+      <!-- Recently Viewed -->
+      <div class="sp-card animate" style="animation-delay:.08s">
+        <div class="sp-title">Recently Viewed</div>
+        <div class="rv-list" id="sidebarRecentList">
+          <div style="padding:16px 0;text-align:center;color:var(--text-label);font-size:12px">No recently viewed listings</div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="sp-card animate" style="animation-delay:.11s">
+        <div class="sp-title">Quick Actions</div>
+        <div class="qa-list">
+          <button class="qa-btn" onclick="openCreateListing()">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v14M1 8h14"/></svg>
+            Create Listing
+          </button>
+          <button class="qa-btn" onclick="switchTab('settings',document.getElementById('settingsTabBtn'))">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M11 2l3 3-8 8H3v-3L11 2z"/></svg>
+            Edit Profile
+          </button>
+          <a href="inbox.html" class="qa-btn">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 10.67A2 2 0 0012.11 12H10a2 2 0 01-2-2V5a2 2 0 012-2h4a2 2 0 012 2v3.89z"/><path d="M6 4H4a2 2 0 00-2 2v5a2 2 0 002 2h.5l1.5 2 1.5-2H8a2 2 0 002-2v-1"/></svg>
+            Messages
+          </a>
+        </div>
+      </div>
+
+    </div><!-- /side panel -->
+  </div><!-- /page grid -->
+</div><!-- /page outer -->
+</div><!-- /pageContent -->
+
+
+<div class="toast" id="toast"><span class="toast-dot"></span><span id="toastMsg"></span></div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL     = 'https://qohwjeybvfajihljtxrx.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvaHdqZXlidmZhamlobGp0eHJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NjMyNDgsImV4cCI6MjA5MjEzOTI0OH0.YuueGczgwOOOORfcb43kW2CFkLWRK7SYURgfBXFASro';
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+});
+
+let currentUser    = null;
+let currentProfile = null;
+let allListings    = [];
+let activeFilter   = 'all';
+let activeSort     = 'newest';
+
+/* ── helpers ── */
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  el.className = 'toast ' + type;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3000);
+}
+window.toast = toast;
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function ini(name) {
+  return (name || '?').split(' ').map(p => p[0]).slice(0,2).join('').toUpperCase();
+}
+function fmtPrice(p) {
+  return p == null ? '—' : Number(p) === 0 ? 'Free' : '$' + Number(p).toLocaleString();
+}
+function fmtMonthYear(d) {
+  return d ? new Date(d).toLocaleDateString('en-US',{month:'long',year:'numeric'}) : '—';
+}
+function relTime(d) {
+  if (!d) return '';
+  const diff = Date.now() - new Date(d).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return mins + 'm ago';
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return hrs + 'h ago';
+  const days = Math.floor(hrs / 24);
+  if (days < 30) return days + 'd ago';
+  return fmtMonthYear(d);
+}
+
+/* ── auth gate ── */
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) { window.location.replace('login.html'); return; }
+
+  const { data: profile, error } = await supabase
+    .from('user_profiles')
+    .select('id,role,email,full_name,avatar_url,bio,company,followers_count,created_at')
+    .eq('id', session.user.id)
+    .maybeSingle();
+
+  if (error || !profile) { window.location.replace('login.html'); return; }
+  if (profile.role === 'admin') { window.location.replace('admin.html'); return; }
+  if (profile.role !== 'seller') { window.location.replace('index.html'); return; }
+
+  currentUser    = session.user;
+  currentProfile = profile;
+
+  document.getElementById('authGate').style.display    = 'none';
+  document.getElementById('pageContent').style.display = 'block';
+
+  renderProfile(profile);
+  loadListings();
+  loadSidebarMessages(session.user.id);
+  loadSidebarRecentlyViewed();
+})();
+
+supabase.auth.onAuthStateChange((event) => {
+  if (event === 'SIGNED_OUT') window.location.replace('login.html');
+});
+
+/* ── render profile ── */
+function renderProfile(p) {
+  const name = p.full_name || p.email.split('@')[0];
+  const ig   = ini(name);
+
+  // header avatar
+  const hdrAv = document.getElementById('hdrAvatar');
+  if (p.avatar_url) {
+    hdrAv.innerHTML = `<img src="${esc(p.avatar_url)}" alt="${esc(name)}">`;
+  } else {
+    hdrAv.textContent = ig;
+  }
+
+  // main avatar
+  const avEl = document.getElementById('profileAv');
+  if (p.avatar_url) {
+    avEl.innerHTML = `<img src="${esc(p.avatar_url)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover">`;
+  } else {
+    avEl.textContent = ig;
+  }
+
+  document.getElementById('profileName').textContent    = name;
+  document.getElementById('profileCompany').textContent = p.company || '';
+  document.getElementById('profileCompany').style.display = p.company ? '' : 'none';
+
+  document.getElementById('profileBio').innerHTML = p.bio
+    ? esc(p.bio)
+    : '<span style="color:var(--text-label);font-style:italic">No bio yet — click Edit Profile to add one.</span>';
+
+  document.getElementById('profileJoined').textContent = 'Joined ' + fmtMonthYear(p.created_at);
+  document.getElementById('metaFollowers').textContent  = p.followers_count ?? 0;
+
+  // about tab
+  document.getElementById('aboutBio').textContent = p.bio || 'No bio added yet. Click Edit Profile to tell buyers about yourself.';
+  document.getElementById('aboutRows').innerHTML = [
+    ['Email', p.email],
+    p.company ? ['Company', p.company] : null,
+    ['Role', 'Verified Seller'],
+    ['Member since', fmtMonthYear(p.created_at)],
+    ['Account age', Math.floor((Date.now() - new Date(p.created_at).getTime()) / 86400000 / 30) + ' months'],
+  ].filter(Boolean).map(([k,v]) =>
+    `<div class="about-row"><span class="about-key">${esc(k)}</span><span class="about-val">${esc(v)}</span></div>`
+  ).join('');
+
+}
+
+/* ── listings ── */
+async function loadListings() {
+  const { data } = await supabase
+    .from('listings')
+    .select('id,title,price,condition,category,image_url,status,created_at')
+    .eq('seller_id', currentUser.id)
+    .order('created_at', { ascending: false });
+
+  allListings = data || [];
+  updateListingsUI();
+}
+
+function updateListingsUI() {
+  let filtered = activeFilter === 'all'
+    ? allListings
+    : allListings.filter(l => (l.status || 'active') === activeFilter);
+
+  if (activeSort === 'oldest')     filtered = [...filtered].sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
+  if (activeSort === 'price-low')  filtered = [...filtered].sort((a,b) => (a.price||0) - (b.price||0));
+  if (activeSort === 'price-high') filtered = [...filtered].sort((a,b) => (b.price||0) - (a.price||0));
+
+  const total  = allListings.length;
+  const active = allListings.filter(l => (l.status||'active') === 'active').length;
+  const sold   = allListings.filter(l => l.status === 'sold').length;
+
+  document.getElementById('metaListings').textContent = total;
+  document.getElementById('metaActive').textContent   = active;
+  document.getElementById('metaSold').textContent     = sold;
+  document.getElementById('tabCountListings').textContent = total;
+
+  const grid = document.getElementById('listingsGrid');
+
+  if (!filtered.length) {
+    const msgs = {
+      all:    ['No listings yet', 'Create your first listing to start selling.'],
+      active: ['No active listings', 'Your active listings will appear here.'],
+      sold:   ['No sold items yet', 'Items you sell will be tracked here.'],
+      draft:  ['No drafts', 'Save a listing as draft to continue later.'],
+    };
+    const [title, sub] = msgs[activeFilter] || msgs.all;
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="6" width="28" height="28" rx="4"/><path d="M14 20h12M20 14v12"/></svg>
+      <p style="font-weight:600;font-size:13.5px;color:var(--text-secondary);margin-top:4px">${esc(title)}</p>
+      <p style="font-size:12px;color:var(--text-label);margin-top:3px">${esc(sub)}</p>
+      <button onclick="openCreateListing()" style="margin-top:12px;height:30px;padding:0 14px;border-radius:var(--r-full);background:var(--accent);color:#fff;font-size:12px;font-weight:500;border:none;cursor:pointer">
+        + Create listing
+      </button>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map((l, i) => {
+    const st = l.status || 'active';
+    const badgeClass = { active:'lbadge-active', sold:'lbadge-sold', draft:'lbadge-draft', removed:'lbadge-flagged' }[st] || 'lbadge-active';
+    const condLabel = { new:'New', like_new:'Like New', good:'Good', fair:'Fair', poor:'Poor' }[l.condition] || l.condition || '';
+    return `<div class="listing-card" style="animation:fadeUp .25s ${i*.04}s var(--ease-spring) both;cursor:pointer" onclick="window.location.href='listing-detail.html?id=${esc(l.id)}'">
+      ${l.image_url
+        ? `<img class="lc-img" src="${esc(l.image_url)}" alt="${esc(l.title)}" loading="lazy">`
+        : `<div class="lc-img-ph"><svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="4" width="24" height="24" rx="3"/><circle cx="12" cy="13" r="3"/><path d="M4 24l7-7 5 5 3-3 9 9"/></svg></div>`}
+      <div class="lc-body">
+        <div class="lc-title">${esc(l.title)}</div>
+        <div class="lc-price">${fmtPrice(l.price)}</div>
+        <div class="lc-meta">${[condLabel, l.category].filter(Boolean).map(esc).join(' · ')}</div>
+        <div class="lc-foot">
+          <span class="lbadge ${badgeClass}">${st === 'like_new' ? 'Like New' : st.charAt(0).toUpperCase()+st.slice(1)}</span>
+          <span class="lc-date">${relTime(l.created_at)}</span>
+        </div>
+        <button onclick="event.stopPropagation();window.location.href='create-listing.html?id=${esc(l.id)}'" style="margin-top:6px;font-size:11px;font-weight:500;color:var(--accent);background:var(--accent-soft);border:none;padding:3px 9px;border-radius:var(--r-full);cursor:pointer">Edit</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── sidebar: messages ── */
+async function loadSidebarMessages(userId) {
+  const el = document.getElementById('sidebarMsgList');
+  if (!el) return;
+
+  const { data: convs } = await supabase
+    .from('conversations')
+    .select('*')
+    .or(`participant_a.eq.${userId},participant_b.eq.${userId}`)
+    .order('last_message_at', { ascending: false })
+    .limit(3);
+
+  if (!convs || convs.length === 0) {
+    el.innerHTML = '<div style="padding:14px 0;text-align:center;color:var(--text-label);font-size:12px">No messages yet</div>';
+    return;
+  }
+
+  const otherIds = [...new Set(convs.map(c => c.participant_a === userId ? c.participant_b : c.participant_a))];
+  let pMap = {};
+  if (otherIds.length) {
+    const { data: profiles } = await supabase.from('user_profiles').select('id,full_name,avatar_url').in('id', otherIds);
+    (profiles || []).forEach(p => pMap[p.id] = p);
+  }
+
+  const convIds = convs.map(c => c.id);
+  let unreadMap = {};
+  if (convIds.length) {
+    const { data: unr } = await supabase.from('messages').select('conversation_id')
+      .in('conversation_id', convIds).eq('recipient_id', userId).eq('read', false);
+    (unr || []).forEach(r => { unreadMap[r.conversation_id] = (unreadMap[r.conversation_id] || 0) + 1; });
+  }
+
+  el.innerHTML = convs.map(c => {
+    const otherId = c.participant_a === userId ? c.participant_b : c.participant_a;
+    const other   = pMap[otherId];
+    const name    = other?.full_name || 'Unknown';
+    const unread  = unreadMap[c.id] || 0;
+    const isMine  = c.last_sender_id === userId;
+    const preview = (isMine ? 'You: ' : '') + (c.last_message || '');
+    const avatarHtml = other?.avatar_url
+      ? `<img src="${esc(other.avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`
+      : ini(name);
+    const timeStr = relTime(c.last_message_at);
+
+    return `<div class="msg-item" onclick="window.location.href='chat.html?cid=${esc(c.id)}'">
+      <div class="msg-av">${avatarHtml}</div>
+      <div class="msg-body">
+        <div class="msg-name">${esc(name)}</div>
+        <div class="msg-preview">${esc(preview)}</div>
+      </div>
+      <div class="msg-meta">
+        <span class="msg-time">${esc(timeStr)}</span>
+        ${unread ? '<span class="msg-unread"></span>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── sidebar: recently viewed ── */
+const RV_KEY = 'utd_recently_viewed';
+
+function getRecentlyViewed() {
+  try { return JSON.parse(localStorage.getItem(RV_KEY) || '[]'); } catch { return []; }
+}
+
+function loadSidebarRecentlyViewed() {
+  const el = document.getElementById('sidebarRecentList');
+  if (!el) return;
+  const items = getRecentlyViewed().slice(0, 4);
+  if (items.length === 0) {
+    el.innerHTML = '<div style="padding:14px 0;text-align:center;color:var(--text-label);font-size:12px">Browse listings to see them here</div>';
+    return;
+  }
+  el.innerHTML = items.map(item => `
+    <div class="rv-item" onclick="window.location.href='index.html'">
+      <img class="rv-thumb" src="${esc(item.image_url || '')}" alt="${esc(item.title)}" onerror="this.src='';this.style.background='var(--bg-muted)'">
+      <div class="rv-info">
+        <div class="rv-title">${esc(item.title)}</div>
+        <div class="rv-price">${esc(item.price)}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ── tabs ── */
+window.switchTab = function(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sec-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (tab === 'settings') _populateProfileSettings();
+};
+
+/* ── Profile Settings tab ── */
+function _populateProfileSettings() {
+  if (!currentProfile) return;
+  const p = currentProfile;
+  const nameEl = document.getElementById('psName');
+  const usernameEl = document.getElementById('psUsername');
+  const companyEl = document.getElementById('psCompany');
+  const bioEl = document.getElementById('psBio');
+  const locationEl = document.getElementById('psLocation');
+  const avUrlEl = document.getElementById('psAvUrl');
+  if (nameEl) nameEl.value = p.full_name || '';
+  if (usernameEl) usernameEl.value = p.username || '';
+  if (companyEl) companyEl.value = p.company || '';
+  if (bioEl) { bioEl.value = p.bio || ''; bioEl.style.height = 'auto'; bioEl.style.height = bioEl.scrollHeight + 'px'; _updateBioCount(); }
+  if (locationEl) locationEl.value = p.location || '';
+  if (avUrlEl) avUrlEl.value = p.avatar_url || '';
+  psPreviewAvatar(p.avatar_url || '');
+}
+
+function _updateBioCount() {
+  const bio = document.getElementById('psBio');
+  const cnt = document.getElementById('psBioCount');
+  if (bio && cnt) cnt.textContent = bio.value.length;
+}
+
+window.psPreviewAvatar = function(url) {
+  const el = document.getElementById('psAvPreview');
+  if (!el) return;
+  const name = currentProfile?.full_name || '?';
+  if (url && url.startsWith('http')) {
+    el.innerHTML = `<img src="${url}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else {
+    el.textContent = (name).split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
+  }
+};
+
+document.getElementById('psBio')?.addEventListener('input', _updateBioCount);
+
+window.saveProfileSettings = async function() {
+  const btn = document.getElementById('psSaveBtn');
+  const msgEl = document.getElementById('psSaveMsg');
+  msgEl.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const full_name  = document.getElementById('psName').value.trim();
+  const username   = document.getElementById('psUsername').value.trim();
+  const company    = document.getElementById('psCompany').value.trim();
+  const bio        = document.getElementById('psBio').value.trim();
+  const location   = document.getElementById('psLocation').value.trim();
+  const avatar_url = document.getElementById('psAvUrl').value.trim();
+
+  if (!full_name) {
+    msgEl.className = 'ps-msg error'; msgEl.style.display = 'block';
+    msgEl.textContent = 'Display name is required.';
+    btn.disabled = false; btn.textContent = 'Save changes'; return;
+  }
+
+  const { error } = await supabase
+    .from('user_profiles')
+    .update({ full_name, username, company, bio, location, avatar_url })
+    .eq('id', currentUser.id);
+
+  btn.disabled = false; btn.textContent = 'Save changes';
+  if (error) {
+    msgEl.className = 'ps-msg error'; msgEl.style.display = 'block';
+    msgEl.textContent = 'Failed to save: ' + error.message; return;
+  }
+
+  Object.assign(currentProfile, { full_name, username, company, bio, location, avatar_url });
+  renderProfile(currentProfile);
+  msgEl.className = 'ps-msg success'; msgEl.style.display = 'block';
+  msgEl.textContent = 'Profile saved successfully.';
+  setTimeout(() => { msgEl.style.display = 'none'; }, 3000);
+  toast('Profile updated.', 'success');
+};
+
+/* ── filters / sort ── */
+window.filterListings = function(filter, btn) {
+  activeFilter = filter;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  updateListingsUI();
+};
+window.sortListings = function(val) {
+  activeSort = val;
+  updateListingsUI();
+};
+
+/* ── sticky header compact ── */
+window.addEventListener('scroll', () => {
+  document.querySelector('.site-header').classList.toggle('compact', window.scrollY > 80);
+}, { passive: true });
+
+/* ── edit modal ── */
+
+/* ── create listing ── */
+window.openCreateListing = function() {
+  window.location.href = 'create-listing.html';
+};
+
+/* ── share profile ── */
+function shareProfile() {
+  const url = window.location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => toast('Profile link copied!', 'success'));
+  } else {
+    toast('Profile link: ' + url);
+  }
+}
+document.getElementById('shareProfileBtn').addEventListener('click', shareProfile);
+
+
+/* ── wire share button ── */
+document.getElementById('hdrShareBtn').addEventListener('click', () => {
+  const url = window.location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => toast('Profile link copied!', 'success'));
+  } else { toast('Profile link: ' + url); }
+});
+</script>
+
+<!-- ══════════════════════════════════
+     PROFILE PANEL
+══════════════════════════════════ -->
+<div class="pp-backdrop" id="ppBackdrop" onclick="closeProfilePanel()"></div>
+
+<div class="pp-panel" id="ppPanel" role="dialog" aria-label="Account panel">
+
+  <div id="ppMain">
+    <!-- Identity row -->
+    <div class="pp-identity">
+      <div class="pp-id-av" id="ppUcAv"></div>
+      <div class="pp-id-info">
+        <div class="pp-id-name" id="ppUcName">Loading…</div>
+        <div class="pp-id-sub" id="ppUcTag">Trusted Seller</div>
+      </div>
+      <button class="pp-id-edit" onclick="showPpSub('edit')" title="Edit profile">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 2l2 2-7 7H3v-2L10 2z"/></svg>
+      </button>
+    </div>
+
+    <!-- Menu list -->
+    <div class="pp-menu">
+      <a href="profile.html" class="pp-menu-item" onclick="closeProfilePanel()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="5.5" r="3"/><path d="M2 14c0-3.31 2.69-6 6-6s6 2.69 6 6"/></svg>
+        Profile
+      </a>
+      <button class="pp-menu-item" onclick="switchTab('listings',document.querySelector('[data-tab=listings]'));closeProfilePanel()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+        My Listings
+      </button>
+      <a href="index.html#saved" class="pp-menu-item" onclick="closeProfilePanel()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2h10a1 1 0 011 1v11l-6-3-6 3V3a1 1 0 011-1z"/></svg>
+        Saved
+      </a>
+      <button class="pp-menu-item" onclick="showPpSub('messages')">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 10.67A2 2 0 0012.11 12H10a2 2 0 01-2-2V5a2 2 0 012-2h4a2 2 0 012 2v3.89z"/><path d="M6 4H4a2 2 0 00-2 2v5a2 2 0 002 2h.5l1.5 2 1.5-2H8a2 2 0 002-2v-1"/></svg>
+        Messages
+        <span class="pp-badge" id="ppMsgBadge" style="display:none;margin-left:auto">0</span>
+      </button>
+      <button class="pp-menu-item" onclick="showPpSub('notifications')">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2a5 5 0 015 5v3l1.5 2H2L3.5 10V7a5 5 0 015-5z"/><path d="M7 13.5a1 1 0 002 0"/></svg>
+        Notifications
+        <span class="pp-badge" id="ppNotifBadge" style="display:none;margin-left:auto">0</span>
+      </button>
+      <div class="pp-divider"></div>
+      <button class="pp-menu-item" style="color:#DC2626" onclick="ppSignOut()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M11 11l3-3-3-3M14 8H6"/></svg>
+        Sign Out
+      </button>
+    </div>
+  </div>
+
+  <!-- Sub: Edit Profile -->
+  <div class="pp-sub" id="ppSub-edit">
+    <div class="pp-sub-hdr">
+      <button class="pp-sub-back" onclick="showPpSub(null)"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 3L5 7l4 4"/></svg></button>
+      <span class="pp-sub-title">Edit Profile</span>
+    </div>
+    <div class="pp-sub-body">
+      <div class="pp-msg" id="ppEditMsg"></div>
+      <!-- Avatar row -->
+      <div class="pp-avatar-upload">
+        <div class="pp-av-preview" id="ppEditAvPreview"></div>
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:500;color:#4E6180;margin-bottom:3px">Profile photo URL</div>
+          <input type="url" id="ppEditAvUrl" placeholder="https://…" style="width:100%;height:28px;padding:0 8px;border:1.5px solid #DDE3EF;border-radius:6px;font-family:inherit;font-size:11.5px;outline:none;background:#fff" oninput="ppPreviewAvatar(this.value)">
+        </div>
+      </div>
+      <!-- Name display (read-only) -->
+      <div style="padding:7px 9px;background:#F7F8FA;border:1px solid #E4E8F0;border-radius:7px;margin-bottom:9px">
+        <div style="font-size:10.5px;font-weight:500;color:#9099AE;margin-bottom:1px">Display name</div>
+        <div style="font-size:13px;font-weight:600;color:#0A1628" id="ppEditNameDisplay"></div>
+        <div style="font-size:10.5px;color:#9099AE;margin-top:2px">Name can only be changed in Account Settings</div>
+      </div>
+      <!-- Editable profile fields -->
+      <div class="pp-field"><label>Bio / description</label><textarea id="ppEditBio" style="width:100%;padding:7px 9px;border:1.5px solid #DDE3EF;border-radius:7px;font-family:inherit;font-size:12.5px;color:#0A1628;outline:none;resize:vertical;min-height:56px;line-height:1.5;background:#fff" placeholder="Tell buyers about yourself…"></textarea></div>
+      <div class="pp-field"><label>Company</label><input type="text" id="ppEditCompany" placeholder="Optional company or brand"></div>
+      <div class="pp-field"><label>Location</label><input type="text" id="ppEditLocation" placeholder="e.g. San Francisco, CA"></div>
+      <div class="pp-field"><label>Response time</label>
+        <select id="ppEditResponseTime" style="width:100%;height:32px;padding:0 8px;border:1.5px solid #DDE3EF;border-radius:7px;font-family:inherit;font-size:12.5px;color:#0A1628;outline:none;background:#fff;cursor:pointer">
+          <option value="Within an hour">Within an hour</option>
+          <option value="Within a few hours">Within a few hours</option>
+          <option value="Within 24 hours">Within 24 hours</option>
+          <option value="A few days">A few days</option>
+        </select>
+      </div>
+      <div class="pp-field"><label>Website</label><input type="url" id="ppEditWebsite" placeholder="https://yoursite.com"></div>
+      <div style="display:flex;gap:6px;margin-top:4px">
+        <button class="pp-save-btn" id="ppEditSaveBtn" onclick="ppSaveEdit()" style="flex:1">Save changes</button>
+        <a href="settings.html" onclick="closeProfilePanel()" style="display:flex;align-items:center;justify-content:center;gap:5px;height:32px;padding:0 12px;border-radius:9999px;border:1.5px solid #DDE3EF;font-size:12px;font-weight:500;color:#344260;background:#fff;white-space:nowrap;flex-shrink:0;transition:background .12s" onmouseover="this.style.background='#F4F6FB'" onmouseout="this.style.background='#fff'">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="2"/><path d="M7 1v2M7 11v2M1 7h2M11 7h2"/></svg>
+          Settings
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub: Messages -->
+  <div class="pp-sub" id="ppSub-messages">
+    <div class="pp-sub-hdr">
+      <button class="pp-sub-back" onclick="showPpSub(null)"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 3L5 7l4 4"/></svg></button>
+      <span class="pp-sub-title">Messages</span>
+      <a href="inbox.html" style="margin-left:auto;font-size:11.5px;font-weight:500;color:#1845D1;text-decoration:none" onclick="closeProfilePanel()">View all</a>
+    </div>
+    <div class="pp-sub-body" id="ppMsgBody">
+      <div style="text-align:center;padding:20px;color:#9099AE;font-size:12px">Loading…</div>
+    </div>
+  </div>
+
+  <!-- Sub: Notifications -->
+  <div class="pp-sub" id="ppSub-notifications">
+    <div class="pp-sub-hdr">
+      <button class="pp-sub-back" onclick="showPpSub(null)"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 3L5 7l4 4"/></svg></button>
+      <span class="pp-sub-title">Notifications</span>
+      <a href="notifications.html" style="margin-left:auto;font-size:11.5px;font-weight:500;color:#1845D1;text-decoration:none" onclick="closeProfilePanel()">View all</a>
+    </div>
+    <div class="pp-sub-body" id="ppNotifBody">
+      <div style="text-align:center;padding:20px;color:#9099AE;font-size:12px">Loading…</div>
+    </div>
+  </div>
+
+
+</div><!-- /ppPanel -->
+
+<script type="module">
+/* ── Profile panel controller (re-uses supabase from parent module scope via window) ── */
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const _ppSupa = createClient(
+  'https://qohwjeybvfajihljtxrx.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvaHdqZXlidmZhamlobGp0eHJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NjMyNDgsImV4cCI6MjA5MjEzOTI0OH0.YuueGczgwOOOORfcb43kW2CFkLWRK7SYURgfBXFASro',
+  { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } }
+);
+
+let _ppPanelOpen = false;
+
+function _ini(n){ return (n||'?').split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase(); }
+function _esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function _fmtNum(n){ return n==null?'—':Number(n)>=1000?(Number(n)/1000).toFixed(1)+'k':String(n); }
+
+function _ppToast(msg, type='success'){
+  let t = document.getElementById('pp-toast-pf');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'pp-toast-pf';
+    t.style.cssText='position:fixed;bottom:20px;right:20px;z-index:9999;background:#0A1628;color:#fff;font-size:12.5px;font-weight:500;height:36px;padding:0 14px;border-radius:9999px;display:flex;align-items:center;gap:7px;box-shadow:0 4px 20px rgba(10,22,40,.22);opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .18s,transform .18s;font-family:inherit';
+    document.body.appendChild(t);
+  }
+  const dot = type==='success'?'#4ADE80':type==='error'?'#F87171':'#60A5FA';
+  t.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:${dot};flex-shrink:0"></span>${_esc(msg)}`;
+  t.style.opacity='1'; t.style.transform='translateY(0)';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(8px)'; }, 3000);
+}
+
+/* ── populate panel from profile data ── */
+function _ppPopulate(profile, userId){
+  const name = profile?.full_name || profile?.email?.split('@')[0] || 'User';
+  // header avatar
+  const hdrAv = document.getElementById('pp-hdr-avatar');
+  if(hdrAv){
+    if(profile?.avatar_url){
+      hdrAv.innerHTML = `<img src="${_esc(profile.avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    } else { hdrAv.textContent = _ini(name); }
+  }
+  // panel user card
+  const ucAv = document.getElementById('ppUcAv');
+  if(ucAv){
+    if(profile?.avatar_url){
+      ucAv.innerHTML = `<img src="${_esc(profile.avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`;
+    } else { ucAv.textContent = _ini(name); }
+  }
+  const nameEl = document.getElementById('ppUcName'); if(nameEl) nameEl.textContent = name;
+  const tagEl  = document.getElementById('ppUcTag');  if(tagEl)  tagEl.textContent  = profile?.company || 'Trusted Seller';
+  // read-only name display in edit panel
+  const nameDisp = document.getElementById('ppEditNameDisplay'); if(nameDisp) nameDisp.textContent = name;
+  // fetch unread counts
+  _ppLoadUnread(userId);
+  // edit form — no full_name field (name is read-only in this panel)
+  const editMap = {
+    ppEditBio:'bio', ppEditCompany:'company', ppEditAvUrl:'avatar_url',
+    ppEditLocation:'location', ppEditWebsite:'website'
+  };
+  Object.entries(editMap).forEach(([id,key])=>{
+    const el = document.getElementById(id);
+    if(el) el.value = profile?.[key] || '';
+  });
+  // response_time select
+  const rtSel = document.getElementById('ppEditResponseTime');
+  if(rtSel && profile?.response_time){
+    const opt = [...rtSel.options].find(o=>o.value===profile.response_time);
+    if(opt) rtSel.value = profile.response_time;
+  }
+  _ppPreviewAvatar(profile?.avatar_url || '', name);
+  // listings count & sold
+  _ppLoadStats(profile, userId);
+}
+
+async function _ppLoadUnread(userId){
+  if(!userId) return;
+  const [msgRes, notifRes] = await Promise.all([
+    _ppSupa.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',userId).eq('read',false),
+    _ppSupa.from('notifications').select('id',{count:'exact',head:true}).eq('user_id',userId).eq('read',false)
+  ]);
+  const msgCount   = msgRes.count   || 0;
+  const notifCount = notifRes.count || 0;
+  const msgBadge   = document.getElementById('ppMsgBadge');
+  const notifBadge = document.getElementById('ppNotifBadge');
+  const notifDot   = document.getElementById('pp-hdr-notif-dot');
+  if(msgBadge){   msgBadge.textContent   = msgCount;   msgBadge.style.display   = msgCount   > 0 ? '' : 'none'; }
+  if(notifBadge){ notifBadge.textContent = notifCount; notifBadge.style.display = notifCount > 0 ? '' : 'none'; }
+  if(notifDot)    notifDot.classList.toggle('visible', (msgCount + notifCount) > 0);
+}
+
+function _ppPreviewAvatar(url, fallbackName){
+  const el = document.getElementById('ppEditAvPreview'); if(!el) return;
+  if(url && url.startsWith('http')){
+    el.innerHTML = `<img src="${_esc(url)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else { el.textContent = _ini(fallbackName||'?'); }
+}
+
+/* wire preview input */
+window.ppPreviewAvatar = function(url){
+  const nameEl = document.getElementById('ppUcName');
+  _ppPreviewAvatar(url, nameEl?.textContent || '?');
+};
+
+/* ── panel toggle ── */
+window.toggleProfilePanel = function(e){
+  e?.stopPropagation();
+  _ppPanelOpen ? closeProfilePanel() : _openPP();
+};
+function _openPP(){
+  _ppPanelOpen = true;
+  document.getElementById('ppPanel').classList.add('open');
+  document.getElementById('ppBackdrop').classList.add('open');
+  document.getElementById('pp-trigger')?.setAttribute('aria-expanded','true');
+}
+window.closeProfilePanel = function(){
+  _ppPanelOpen = false;
+  document.getElementById('ppPanel').classList.remove('open');
+  document.getElementById('ppBackdrop').classList.remove('open');
+  document.getElementById('pp-trigger')?.removeAttribute('aria-expanded');
+  setTimeout(()=>showPpSub(null), 220);
+};
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && _ppPanelOpen) closeProfilePanel(); });
+
+/* ── sub navigation ── */
+window.showPpSub = function(name){
+  document.getElementById('ppMain').style.display = name ? 'none' : '';
+  document.querySelectorAll('.pp-sub').forEach(s=>s.classList.remove('active'));
+  if(name){
+    document.getElementById('ppSub-'+name)?.classList.add('active');
+    if(name === 'messages')      _ppLoadPanelMessages();
+    if(name === 'notifications') _ppLoadPanelNotifications();
+  }
+};
+
+function _ppFmtTime(iso){
+  if(!iso) return '';
+  const d=new Date(iso),now=new Date(),diff=(now-d)/1000;
+  if(diff<60) return 'now';
+  if(diff<3600) return Math.floor(diff/60)+'m';
+  if(diff<86400) return Math.floor(diff/3600)+'h';
+  if(diff<604800) return Math.floor(diff/86400)+'d';
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+async function _ppLoadPanelMessages(){
+  const { data:{ session } } = await _ppSupa.auth.getSession();
+  if(!session) return;
+  const uid = session.user.id;
+  const body = document.getElementById('ppMsgBody');
+  if(!body) return;
+  body.innerHTML = '<div style="text-align:center;padding:20px;color:#9099AE;font-size:12px">Loading…</div>';
+
+  const { data: convs } = await _ppSupa
+    .from('conversations')
+    .select('*')
+    .or(`participant_a.eq.${uid},participant_b.eq.${uid}`)
+    .order('last_message_at', { ascending: false })
+    .limit(5);
+
+  if(!convs || convs.length === 0){
+    body.innerHTML = '<div style="text-align:center;padding:24px 12px;color:#9099AE;font-size:12.5px"><p style="font-weight:600;color:#344260;margin-bottom:4px">No messages yet</p><p>Start a conversation from any listing.</p></div>';
+    return;
+  }
+
+  const otherIds = [...new Set(convs.map(c => c.participant_a===uid?c.participant_b:c.participant_a))];
+  let profileMap = {};
+  if(otherIds.length){
+    const {data:profiles}=await _ppSupa.from('user_profiles').select('id,full_name,avatar_url').in('id',otherIds);
+    (profiles||[]).forEach(p=>profileMap[p.id]=p);
+  }
+
+  const convIds = convs.map(c=>c.id);
+  let unreadMap = {};
+  if(convIds.length){
+    const {data:unr}=await _ppSupa.from('messages').select('conversation_id').in('conversation_id',convIds).eq('recipient_id',uid).eq('read',false);
+    (unr||[]).forEach(r=>{ unreadMap[r.conversation_id]=(unreadMap[r.conversation_id]||0)+1; });
+  }
+
+  const _esc2 = s => { const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; };
+  const _ini2 = n => (n||'?').split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
+
+  body.innerHTML = convs.map(c=>{
+    const otherId = c.participant_a===uid?c.participant_b:c.participant_a;
+    const other = profileMap[otherId];
+    const name = other?.full_name||'Unknown';
+    const unread = unreadMap[c.id]||0;
+    const isMine = c.last_sender_id===uid;
+    const preview = (isMine?'You: ':'')+(c.last_message||'No messages');
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .1s" onmouseover="this.style.background='#F5F6FA'" onmouseout="this.style.background=''" onclick="window.location.href='chat.html?cid=${_esc2(c.id)}'">
+      <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1845D1,#2563EB);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0">${other?.avatar_url?`<img src="${_esc2(other.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`${_esc2(_ini2(name))}`}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:${unread?'700':'600'};color:#0A1628;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${_esc2(name)}</div>
+        <div style="font-size:12px;color:${unread?'#344260':'#9099AE'};font-weight:${unread?'500':'400'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${_esc2(preview)}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+        <span style="font-size:10.5px;color:#9099AE">${_ppFmtTime(c.last_message_at)}</span>
+        ${unread?`<span style="width:8px;height:8px;border-radius:50%;background:#1845D1;display:block"></span>`:''}
+      </div>
+    </div>`;
+  }).join('') + `<a href="inbox.html" style="display:block;text-align:center;padding:10px;font-size:12px;font-weight:600;color:#1845D1;border-top:1px solid #F0F2F8;text-decoration:none">Open Inbox</a>`;
+}
+
+async function _ppLoadPanelNotifications(){
+  const { data:{ session } } = await _ppSupa.auth.getSession();
+  if(!session) return;
+  const body = document.getElementById('ppNotifBody');
+  if(!body) return;
+  body.innerHTML = '<div style="text-align:center;padding:20px;color:#9099AE;font-size:12px">Loading…</div>';
+
+  const { data: notifs } = await _ppSupa
+    .from('notifications')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('created_at', { ascending: false })
+    .limit(5);
+
+  if(!notifs || notifs.length === 0){
+    body.innerHTML = '<div style="text-align:center;padding:24px 12px;color:#9099AE;font-size:12.5px"><p style="font-weight:600;color:#344260;margin-bottom:4px">No notifications</p><p>Activity will appear here.</p></div>';
+    return;
+  }
+
+  const _esc2 = s => { const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; };
+
+  body.innerHTML = notifs.map(n=>{
+    const url = n.action_url||'notifications.html';
+    return `<div class="pp-notif-item" style="cursor:pointer" onclick="_ppHandleNotifClick('${_esc2(n.id)}','${_esc2(url)}',this)">
+      <div class="pp-notif-dot ${n.read?'read':'unread'}"></div>
+      <div class="pp-notif-text">${_esc2(n.title)}</div>
+      <div class="pp-notif-time">${_ppFmtTime(n.created_at)}</div>
+    </div>`;
+  }).join('') + `<a href="notifications.html" style="display:block;text-align:center;padding:10px;font-size:12px;font-weight:600;color:#1845D1;border-top:1px solid #F0F2F8;text-decoration:none">View all</a>`;
+}
+
+window._ppHandleNotifClick = async function(id, url, el){
+  await _ppSupa.from('notifications').update({read:true}).eq('id',id);
+  const dot = el.querySelector('.pp-notif-dot');
+  if(dot){ dot.classList.remove('unread'); dot.classList.add('read'); }
+  if(url && url!=='#') window.location.href = url;
+};
+
+/* ── save edit (profile details only — name is NOT editable here) ── */
+window.ppSaveEdit = async function(){
+  const btn = document.getElementById('ppEditSaveBtn');
+  const msgEl = document.getElementById('ppEditMsg');
+  const { data:{ session } } = await _ppSupa.auth.getSession();
+  if(!session) return;
+  btn.disabled=true; btn.textContent='Saving…'; msgEl.style.display='none';
+  const bio           = document.getElementById('ppEditBio').value.trim();
+  const company       = document.getElementById('ppEditCompany').value.trim();
+  const avatar_url    = document.getElementById('ppEditAvUrl').value.trim();
+  const location      = document.getElementById('ppEditLocation')?.value.trim() || '';
+  const response_time = document.getElementById('ppEditResponseTime')?.value || '';
+  const website       = document.getElementById('ppEditWebsite')?.value.trim() || '';
+  const update = { bio, company, avatar_url, location, response_time, website };
+  const { error } = await _ppSupa.from('user_profiles').update(update).eq('id',session.user.id);
+  btn.disabled=false; btn.textContent='Save changes';
+  if(error){ msgEl.className='pp-msg error'; msgEl.style.display='block'; msgEl.textContent='Save failed: '+error.message; return; }
+  // refresh avatars (name unchanged)
+  const currentName = document.getElementById('ppUcName')?.textContent || '?';
+  const hdrAv = document.getElementById('pp-hdr-avatar');
+  const ucAv  = document.getElementById('ppUcAv');
+  const avFn  = (el)=>{
+    if(!el) return;
+    if(avatar_url){ el.innerHTML=`<img src="${_esc(avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover${el.id==='ppUcAv'?'':';border-radius:50%'}">`;
+    } else { el.textContent = _ini(currentName); }
+  };
+  avFn(hdrAv); avFn(ucAv);
+  // sync to profile page elements if present
+  if(typeof renderProfile==='function' && window.currentProfile){
+    Object.assign(window.currentProfile, update);
+    renderProfile(window.currentProfile);
+  }
+  showPpSub(null);
+  _ppToast('Profile updated.', 'success');
+};
+
+/* ── change password ── */
+window.ppChangePassword = async function(){
+  const btn=document.getElementById('ppPwBtn'), msgEl=document.getElementById('ppPwMsg');
+  const pw=document.getElementById('ppPwNew').value, conf=document.getElementById('ppPwConfirm').value;
+  msgEl.style.display='none';
+  if(pw.length<8){ msgEl.className='pp-msg error'; msgEl.style.display='block'; msgEl.textContent='At least 8 characters required.'; return; }
+  if(pw!==conf){ msgEl.className='pp-msg error'; msgEl.style.display='block'; msgEl.textContent='Passwords do not match.'; return; }
+  btn.disabled=true; btn.textContent='Updating…';
+  const { error } = await _ppSupa.auth.updateUser({ password: pw });
+  btn.disabled=false; btn.textContent='Update password';
+  if(error){ msgEl.className='pp-msg error'; msgEl.style.display='block'; msgEl.textContent=error.message; return; }
+  document.getElementById('ppPwNew').value=''; document.getElementById('ppPwConfirm').value='';
+  msgEl.className='pp-msg success'; msgEl.style.display='block'; msgEl.textContent='Password updated!';
+  setTimeout(()=>{ msgEl.style.display='none'; showPpSub(null); }, 1800);
+  _ppToast('Password changed.', 'success');
+};
+
+/* ── toggle ── */
+window.ppToggle = function(btn){ btn.classList.toggle('on'); };
+
+/* ── sign out ── */
+window.ppSignOut = async function(){
+  closeProfilePanel();
+  await _ppSupa.auth.signOut();
+  window.location.replace('login.html');
+};
+
+/* ── init: load profile data for panel ── */
+(async ()=>{
+  const { data:{ session } } = await _ppSupa.auth.getSession();
+  if(!session) return;
+  const { data: profile } = await _ppSupa
+    .from('user_profiles')
+    .select('id,role,full_name,email,avatar_url,bio,company,followers_count')
+    .eq('id', session.user.id)
+    .maybeSingle();
+  if(profile) _ppPopulate(profile, session.user.id);
+})();
+</script>
+</body>
+</html>
