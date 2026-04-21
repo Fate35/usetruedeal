@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — UseTrueDeal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg: #ffffff;
+  --bg-subtle: #F7F8FA;
+  --bg-muted: #F1F3F7;
+  --border: #E4E8F0;
+  --border-mid: #C8D0E0;
+  --text-primary: #0A1628;
+  --text-secondary: #344260;
+  --text-muted: #6B7A96;
+  --text-label: #9099AE;
+  --accent: #1845D1;
+  --accent-soft: #EAF0FF;
+  --accent-vivid: #2050E8;
+  --success: #026B40;
+  --success-light: #E3FAF0;
+  --success-border: #A8E8CA;
+  --warning: #9A3900;
+  --warning-light: #FEF3E8;
+  --warning-border: #F6C89A;
+  --danger: #9D1B0D;
+  --danger-light: #FFF0EE;
+  --danger-border: #F5C0B8;
+  --sidebar-w: 220px;
+  --header-h: 56px;
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-full: 9999px;
+  --ease: cubic-bezier(0.4,0,0.2,1);
+  --ease-spring: cubic-bezier(0.22,1,0.36,1);
+  --t: 0.16s;
+  --t-slow: 0.28s;
+  --shadow-sm: 0 1px 2px rgba(10,22,40,0.06);
+  --shadow-card: 0 0 0 1px rgba(10,22,40,0.06), 0 1px 3px rgba(10,22,40,0.07), 0 4px 12px rgba(10,22,40,0.04);
+  --shadow-header: 0 1px 0 var(--border), 0 2px 12px rgba(10,22,40,0.04);
+  --shadow-modal: 0 0 0 1px rgba(10,22,40,0.05), 0 24px 64px rgba(10,22,40,0.2);
+  --shadow-input-focus: 0 0 0 3px rgba(24,69,209,0.14);
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+  letter-spacing: 0.004em;
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+a { color: inherit; text-decoration: none; }
+input, select { font-family: inherit; }
+
+/* ── AUTH GATE ── */
+#authGate {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-size: 14px;
+  color: var(--text-muted);
+  gap: 10px;
+}
+#authGate .gate-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-mid);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── APP SHELL ── */
+#appShell { display: none; }
+
+/* ── HEADER ── */
+.admin-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-h);
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-header);
+  display: flex;
+  align-items: center;
+  padding: 0 20px 0 0;
+  z-index: 50;
+}
+.header-sidebar-w {
+  width: var(--sidebar-w);
+  padding: 0 20px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-logo {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+.header-logo span { color: var(--accent); }
+.header-admin-badge {
+  height: 20px;
+  padding: 0 7px;
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  border: 1px solid #C5D8FF;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+}
+.header-spacer { flex: 1; }
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-user-email {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.btn-signout {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: var(--r-full);
+  border: 1.5px solid var(--border-mid);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all var(--t) var(--ease);
+}
+.btn-signout:hover {
+  border-color: var(--danger-border);
+  color: var(--danger);
+  background: var(--danger-light);
+}
+
+/* ── LAYOUT ── */
+.admin-layout {
+  display: flex;
+  margin-top: var(--header-h);
+  min-height: calc(100vh - var(--header-h));
+}
+
+/* ── SIDEBAR ── */
+.admin-sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  padding: 16px 10px;
+  position: fixed;
+  top: var(--header-h);
+  bottom: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.admin-sidebar::-webkit-scrollbar { display: none; }
+
+.sidebar-section {
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+}
+.sidebar-section + .sidebar-section {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 8px;
+}
+.sidebar-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-label);
+  padding: 0 10px 8px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: var(--r-md);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: background var(--t) var(--ease), color var(--t) var(--ease);
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+.nav-item svg { flex-shrink: 0; opacity: 0.65; }
+.nav-item:hover { background: var(--bg-subtle); color: var(--text-primary); }
+.nav-item:hover svg { opacity: 0.85; }
+.nav-item.active { background: var(--accent-soft); color: var(--accent); }
+.nav-item.active svg { opacity: 1; }
+
+/* ── CONTENT ── */
+.admin-content {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  padding: 28px 28px 64px;
+  min-width: 0;
+}
+
+/* ── PAGE SECTIONS ── */
+.page-section { display: none; }
+.page-section.active { display: block; animation: fadeIn 0.25s var(--ease-spring); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── SECTION HEADER ── */
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.012em;
+  line-height: 1.2;
+}
+.section-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+/* ── STATS GRID ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--bg);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  animation: fadeIn 0.3s var(--ease-spring) both;
+}
+.stat-label {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.stat-value {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.stat-change {
+  font-size: 12px;
+  color: var(--success);
+  margin-top: 6px;
+}
+
+/* ── TABLE ── */
+.table-wrap {
+  background: var(--bg);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.search-input {
+  height: 34px;
+  padding: 0 12px 0 34px;
+  border-radius: var(--r-full);
+  border: 1.5px solid var(--border-mid);
+  font-size: 13px;
+  color: var(--text-primary);
+  outline: none;
+  background: var(--bg-subtle);
+  transition: border-color var(--t) var(--ease), box-shadow var(--t) var(--ease);
+  min-width: 200px;
+}
+.search-input:focus {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-input-focus);
+  background: var(--bg);
+}
+.search-wrap {
+  position: relative;
+  flex: 1;
+  max-width: 280px;
+}
+.search-icon {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-label);
+  pointer-events: none;
+}
+.filter-select {
+  height: 34px;
+  padding: 0 28px 0 10px;
+  border-radius: var(--r-full);
+  border: 1.5px solid var(--border-mid);
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  background: var(--bg-subtle) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239099AE' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 10px center no-repeat;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--t) var(--ease);
+}
+.filter-select:focus { border-color: var(--accent); }
+.toolbar-spacer { flex: 1; }
+.table-count {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+thead th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-label);
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background var(--t) var(--ease);
+}
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--bg-subtle); }
+tbody td {
+  padding: 12px 16px;
+  vertical-align: middle;
+  color: var(--text-secondary);
+}
+.td-main { color: var(--text-primary); font-weight: 500; max-width: 260px; }
+.td-main .td-sub { font-size: 12px; font-weight: 400; color: var(--text-muted); margin-top: 1px; }
+.td-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+/* ── BADGES ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: var(--r-full);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.badge-active   { background: var(--success-light); color: var(--success); border: 1px solid var(--success-border); }
+.badge-removed  { background: var(--danger-light);  color: var(--danger);  border: 1px solid var(--danger-border); }
+.badge-flagged  { background: var(--warning-light); color: var(--warning); border: 1px solid var(--warning-border); }
+.badge-admin    { background: var(--accent-soft);   color: var(--accent);  border: 1px solid #C5D8FF; }
+.badge-user     { background: var(--bg-muted);      color: var(--text-muted); border: 1px solid var(--border); }
+.badge-verified { background: var(--success-light); color: var(--success); border: 1px solid var(--success-border); }
+
+/* ── ACTION BUTTONS ── */
+.action-group { display: flex; align-items: center; gap: 6px; }
+.btn-action {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 500;
+  border: 1.5px solid var(--border-mid);
+  color: var(--text-secondary);
+  transition: all var(--t) var(--ease);
+  white-space: nowrap;
+}
+.btn-action:hover { border-color: var(--border-mid); background: var(--bg-muted); }
+.btn-action.danger:hover { border-color: var(--danger-border); color: var(--danger); background: var(--danger-light); }
+.btn-action.success:hover { border-color: var(--success-border); color: var(--success); background: var(--success-light); }
+.btn-action.warn:hover { border-color: var(--warning-border); color: var(--warning); background: var(--warning-light); }
+
+/* ── EMPTY STATE ── */
+.table-empty {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13.5px;
+}
+
+/* ── SETTINGS ── */
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+.settings-card {
+  background: var(--bg);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  padding: 22px;
+  animation: fadeIn 0.3s var(--ease-spring) both;
+}
+.settings-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.settings-card-sub {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+.settings-divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+}
+.setting-row + .setting-row { border-top: 1px solid var(--border); }
+.setting-info {}
+.setting-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.setting-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+/* Toggle */
+.toggle-wrap { flex-shrink: 0; }
+.toggle {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  cursor: pointer;
+}
+.toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-full);
+  background: var(--border-mid);
+  transition: background var(--t) var(--ease);
+}
+.toggle input:checked ~ .toggle-track { background: var(--accent); }
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t) var(--ease-spring);
+}
+.toggle input:checked ~ .toggle-thumb { transform: translateX(16px); }
+
+.form-input-sm {
+  width: 100%;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: var(--r-md);
+  border: 1.5px solid var(--border-mid);
+  background: var(--bg);
+  font-size: 13px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--t) var(--ease), box-shadow var(--t) var(--ease);
+  margin-top: 8px;
+}
+.form-input-sm:focus { border-color: var(--accent); box-shadow: var(--shadow-input-focus); }
+
+.btn-save {
+  height: 34px;
+  padding: 0 16px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 14px;
+  transition: background var(--t) var(--ease);
+}
+.btn-save:hover { background: var(--accent-vivid); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  background: var(--text-primary);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--r-full);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 20px rgba(10,22,40,0.25);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease-spring);
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success .toast-dot { background: #4ADE80; }
+.toast.danger  .toast-dot { background: #F87171; }
+.toast.warn    .toast-dot { background: #FBB450; }
+.toast-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── CONFIRM MODAL ── */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,22,40,0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s var(--ease), visibility 0.2s;
+}
+.confirm-overlay.open { opacity: 1; visibility: visible; }
+.confirm-modal {
+  background: var(--bg);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-modal);
+  padding: 28px;
+  max-width: 380px;
+  width: 100%;
+  transform: translateY(10px) scale(0.98);
+  transition: transform 0.25s var(--ease-spring);
+}
+.confirm-overlay.open .confirm-modal { transform: translateY(0) scale(1); }
+.confirm-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  background: var(--danger-light);
+  color: var(--danger);
+}
+.confirm-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.confirm-body {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.confirm-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.btn-cancel {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: var(--r-full);
+  border: 1.5px solid var(--border-mid);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all var(--t) var(--ease);
+}
+.btn-cancel:hover { background: var(--bg-muted); }
+.btn-confirm-del {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: var(--r-full);
+  background: var(--danger);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  transition: opacity var(--t) var(--ease);
+}
+.btn-confirm-del:hover { opacity: 0.85; }
+
+/* ── LOADING ROW ── */
+.loading-row td {
+  text-align: center;
+  padding: 32px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.inline-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border-mid);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  :root { --sidebar-w: 0px; }
+  .admin-sidebar { transform: translateX(-220px); width: 220px; transition: transform 0.25s var(--ease); }
+  .admin-sidebar.open { transform: translateX(0); }
+  .admin-content { margin-left: 0; padding: 20px 16px 48px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .settings-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Auth gate spinner -->
+<div id="authGate">
+  <div class="gate-spinner"></div>
+  Verifying access…
+</div>
+
+<!-- App shell (hidden until auth verified) -->
+<div id="appShell">
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="header-sidebar-w">
+      <div class="header-logo">Use<span>True</span>Deal</div>
+      <div class="header-admin-badge">Admin</div>
+    </div>
+    <div class="header-spacer"></div>
+    <div class="header-user">
+      <span class="header-user-email" id="headerEmail"></span>
+      <button class="btn-signout" onclick="signOut()">Sign out</button>
+    </div>
+  </header>
+
+  <!-- Layout -->
+  <div class="admin-layout">
+
+    <!-- Sidebar -->
+    <nav class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Overview</div>
+        <button class="nav-item active" onclick="showSection('dashboard', this)">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="1" width="5.5" height="5.5" rx="1.5"/><rect x="8.5" y="1" width="5.5" height="5.5" rx="1.5"/><rect x="1" y="8.5" width="5.5" height="5.5" rx="1.5"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5"/></svg>
+          Dashboard
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Manage</div>
+        <button class="nav-item" onclick="showSection('listings', this)">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4h13M1 8h9M1 12h6"/></svg>
+          Listings
+        </button>
+        <button class="nav-item" onclick="showSection('users', this)">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="4.5" r="2.5"/><path d="M2 13c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/></svg>
+          Users
+        </button>
+        <button class="nav-item" onclick="showSection('reports', this)" id="nav-reports">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 1L9.5 5.5H14L10.5 8.5L11.5 13L7.5 10.5L3.5 13L4.5 8.5L1 5.5H5.5L7.5 1Z"/></svg>
+          Reports
+          <span id="reports-badge" style="margin-left:auto;background:var(--danger);color:#fff;font-size:10px;font-weight:600;height:16px;min-width:16px;padding:0 4px;border-radius:8px;display:none;align-items:center;justify-content:center;"></span>
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">System</div>
+        <button class="nav-item" onclick="showSection('settings', this)">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="7.5" r="2"/><path d="M7.5 1v1.5M7.5 12.5V14M1 7.5h1.5M12.5 7.5H14M3.2 3.2l1.1 1.1M10.7 10.7l1.1 1.1M3.2 11.8l1.1-1.1M10.7 4.3l1.1-1.1"/></svg>
+          Settings
+        </button>
+      </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="admin-content">
+
+      <!-- ── DASHBOARD ── -->
+      <section class="page-section active" id="sec-dashboard">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Dashboard</div>
+            <div class="section-sub">Platform overview</div>
+          </div>
+        </div>
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card" style="animation-delay:0s"><div class="stat-label">Total Listings</div><div class="stat-value" id="stat-listings">—</div></div>
+          <div class="stat-card" style="animation-delay:0.05s"><div class="stat-label">Active Listings</div><div class="stat-value" id="stat-active">—</div></div>
+          <div class="stat-card" style="animation-delay:0.10s"><div class="stat-label">Flagged</div><div class="stat-value" id="stat-flagged">—</div></div>
+          <div class="stat-card" style="animation-delay:0.15s"><div class="stat-label">Sellers</div><div class="stat-value" id="stat-sellers">—</div></div>
+        </div>
+
+        <div class="section-header" style="margin-top:8px">
+          <div>
+            <div class="section-title" style="font-size:16px">Recent Listings</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Added</th>
+              </tr>
+            </thead>
+            <tbody id="dashRecentBody">
+              <tr class="loading-row"><td colspan="5"><span class="inline-spinner"></span>Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── LISTINGS ── -->
+      <section class="page-section" id="sec-listings">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Listings</div>
+            <div class="section-sub">Review, flag, or remove listings</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-toolbar">
+            <div class="search-wrap">
+              <svg class="search-icon" width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="5.5" cy="5.5" r="4"/><path d="M9 9l3 3"/></svg>
+              <input class="search-input" type="search" id="listingSearch" placeholder="Search listings…" oninput="filterListings()">
+            </div>
+            <select class="filter-select" id="listingStatusFilter" onchange="filterListings()">
+              <option value="">All statuses</option>
+              <option value="active">Active</option>
+              <option value="flagged">Flagged</option>
+              <option value="removed">Removed</option>
+            </select>
+            <select class="filter-select" id="listingCatFilter" onchange="filterListings()">
+              <option value="">All categories</option>
+            </select>
+            <div class="toolbar-spacer"></div>
+            <span class="table-count" id="listingCount"></span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Condition</th>
+                <th>Status</th>
+                <th>Added</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="listingsBody">
+              <tr class="loading-row"><td colspan="7"><span class="inline-spinner"></span>Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── USERS ── -->
+      <section class="page-section" id="sec-users">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Users</div>
+            <div class="section-sub">All registered platform users</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-toolbar">
+            <div class="search-wrap">
+              <svg class="search-icon" width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="5.5" cy="5.5" r="4"/><path d="M9 9l3 3"/></svg>
+              <input class="search-input" type="search" id="userSearch" placeholder="Search users…" oninput="filterUsers()">
+            </div>
+            <select class="filter-select" id="userRoleFilter" onchange="filterUsers()">
+              <option value="">All roles</option>
+              <option value="user">User</option>
+              <option value="seller">Seller</option>
+              <option value="admin">Admin</option>
+            </select>
+            <div class="toolbar-spacer"></div>
+            <span class="table-count" id="userCount"></span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Company</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody">
+              <tr class="loading-row"><td colspan="6"><span class="inline-spinner"></span>Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── REPORTS ── -->
+      <section class="page-section" id="sec-reports">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Reports</div>
+            <div class="section-sub">User-submitted reports on listings and accounts</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-toolbar">
+            <div class="search-wrap">
+              <svg class="search-icon" width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="5.5" cy="5.5" r="4"/><path d="M9 9l3 3"/></svg>
+              <input class="search-input" type="search" id="reportSearch" placeholder="Search reports…" oninput="filterReports()">
+            </div>
+            <select class="filter-select" id="reportStatusFilter" onchange="filterReports()">
+              <option value="">All statuses</option>
+              <option value="open">Open</option>
+              <option value="resolved">Resolved</option>
+              <option value="dismissed">Dismissed</option>
+            </select>
+            <select class="filter-select" id="reportTypeFilter" onchange="filterReports()">
+              <option value="">All types</option>
+              <option value="listing">Listing</option>
+              <option value="user">User</option>
+            </select>
+            <div class="toolbar-spacer"></div>
+            <span class="table-count" id="reportCount"></span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Reported</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="reportsBody">
+              <tr class="loading-row"><td colspan="5"><span class="inline-spinner"></span>Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── SETTINGS ── -->
+      <section class="page-section" id="sec-settings">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Platform Settings</div>
+            <div class="section-sub">Control core marketplace behavior</div>
+          </div>
+        </div>
+        <div class="settings-grid">
+
+          <!-- Listings -->
+          <div class="settings-card">
+            <div class="settings-card-title">Listings</div>
+            <div class="settings-card-sub">Control what users can post</div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">New listings allowed</div>
+                <div class="setting-desc">Let sellers create new listings</div>
+              </div>
+              <div class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" checked id="setting-new-listings">
+                  <span class="toggle-track"></span>
+                  <span class="toggle-thumb"></span>
+                </label>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">Require approval</div>
+                <div class="setting-desc">New listings need admin review before going live</div>
+              </div>
+              <div class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" id="setting-require-approval">
+                  <span class="toggle-track"></span>
+                  <span class="toggle-thumb"></span>
+                </label>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">Free listings visible</div>
+                <div class="setting-desc">Show $0 / free items in search results</div>
+              </div>
+              <div class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" checked id="setting-free-listings">
+                  <span class="toggle-track"></span>
+                  <span class="toggle-thumb"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Users -->
+          <div class="settings-card">
+            <div class="settings-card-title">Users &amp; Registration</div>
+            <div class="settings-card-sub">Manage who can join the platform</div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">Open registration</div>
+                <div class="setting-desc">Anyone can create an account</div>
+              </div>
+              <div class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" checked id="setting-open-reg">
+                  <span class="toggle-track"></span>
+                  <span class="toggle-thumb"></span>
+                </label>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">Email verification</div>
+                <div class="setting-desc">Require email confirmation to post</div>
+              </div>
+              <div class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" id="setting-email-verify">
+                  <span class="toggle-track"></span>
+                  <span class="toggle-thumb"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Branding -->
+          <div class="settings-card">
+            <div class="settings-card-title">Branding</div>
+            <div class="settings-card-sub">Customize the platform name and contact</div>
+            <div>
+              <div class="setting-name" style="font-size:12.5px;color:var(--text-muted);margin-bottom:4px;">Platform name</div>
+              <input class="form-input-sm" type="text" value="UseTrueDeal" id="setting-platform-name">
+            </div>
+            <div style="margin-top:12px;">
+              <div class="setting-name" style="font-size:12.5px;color:var(--text-muted);margin-bottom:4px;">Support email</div>
+              <input class="form-input-sm" type="email" value="support@usetruedeal.com" id="setting-support-email">
+            </div>
+            <button class="btn-save" onclick="saveSettings()">Save changes</button>
+          </div>
+
+          <!-- Moderation -->
+          <div class="settings-card">
+            <div class="settings-card-title">Moderation</div>
+            <div class="settings-card-sub">Auto-moderation and content rules</div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">Auto-flag suspicious prices</div>
+                <div class="setting-desc">Flag listings priced unusually low</div>
+              </div>
+              <div class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" checked id="setting-auto-flag">
+                  <span class="toggle-track"></span>
+                  <span class="toggle-thumb"></span>
+                </label>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <div class="setting-name">Profanity filter</div>
+                <div class="setting-desc">Block offensive words in listings</div>
+              </div>
+              <div class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" checked id="setting-profanity">
+                  <span class="toggle-track"></span>
+                  <span class="toggle-thumb"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span class="toast-dot"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<!-- Confirm modal -->
+<div class="confirm-overlay" id="confirmOverlay" onclick="handleConfirmOverlay(event)">
+  <div class="confirm-modal">
+    <div class="confirm-icon">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 7v5M10 14v.5"/><path d="M8.5 3.2L1.8 15.3A1.8 1.8 0 003.3 18h13.4a1.8 1.8 0 001.5-2.7L11.5 3.2a1.8 1.8 0 00-3 0z"/></svg>
+    </div>
+    <div class="confirm-title" id="confirmTitle">Delete listing?</div>
+    <div class="confirm-body" id="confirmBody">This action cannot be undone.</div>
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-confirm-del" id="confirmOkBtn" onclick="confirmOk()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = 'https://qohwjeybvfajihljtxrx.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvaHdqZXlidmZhamlobGp0eHJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NjMyNDgsImV4cCI6MjA5MjEzOTI0OH0.YuueGczgwOOOORfcb43kW2CFkLWRK7SYURgfBXFASro';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  }
+});
+
+/* ── STATE ── */
+let allListings = [];
+let allUsers    = [];
+let allReports  = [];
+let pendingConfirm = null;
+let appReady = false;
+
+/* ── AUTH GATE ── */
+// Use getSession() directly — it reads from localStorage synchronously and never races.
+// onAuthStateChange is only used to catch SIGNED_OUT after the page is already loaded.
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) {
+    window.location.replace('login.html');
+    return;
+  }
+
+  const { data: profile, error } = await supabase
+    .from('user_profiles').select('role').eq('id', session.user.id).maybeSingle();
+
+  if (error || !profile || profile.role !== 'admin') {
+    window.location.replace('login.html');
+    return;
+  }
+
+  appReady = true;
+  document.getElementById('headerEmail').textContent = session.user.email;
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('appShell').style.display = 'block';
+  loadDashboard();
+})();
+
+// Sign-out detected while the page is open → redirect immediately
+supabase.auth.onAuthStateChange((event) => {
+  if (event === 'SIGNED_OUT') window.location.replace('login.html');
+});
+
+/* ── SIGN OUT ── */
+window.signOut = async function() {
+  appReady = false;
+  await supabase.auth.signOut();
+  window.location.replace('login.html');
+};
+
+/* ── NAVIGATION ── */
+window.showSection = function(id, btn) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  btn.classList.add('active');
+
+  if (id === 'listings' && allListings.length === 0) loadListings();
+  if (id === 'users'    && allUsers.length === 0)    loadUsers();
+  if (id === 'reports'  && allReports.length === 0)  loadReports();
+};
+
+/* ── TOAST ── */
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  el.className = 'toast ' + type;
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+window.toast = toast;
+
+/* ── CONFIRM MODAL ── */
+window.showConfirm = function(title, body, onOk) {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmBody').textContent  = body;
+  pendingConfirm = onOk;
+  document.getElementById('confirmOverlay').classList.add('open');
+};
+window.closeConfirm = function() {
+  document.getElementById('confirmOverlay').classList.remove('open');
+  pendingConfirm = null;
+};
+window.confirmOk = function() { closeConfirm(); if (pendingConfirm) pendingConfirm(); };
+window.handleConfirmOverlay = function(e) {
+  if (e.target === document.getElementById('confirmOverlay')) closeConfirm();
+};
+
+/* ── HELPERS ── */
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+function fmtPrice(p) {
+  return (p == null) ? '—' : (Number(p) === 0 ? 'Free' : '$' + Number(p).toLocaleString());
+}
+function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function statusBadge(s) {
+  const map = { active:'badge-active', removed:'badge-removed', flagged:'badge-flagged', open:'badge-flagged', resolved:'badge-active', dismissed:'badge-user' };
+  return `<span class="badge ${map[s] || 'badge-user'}">${esc(s || 'active')}</span>`;
+}
+function roleBadge(r) {
+  const map = { admin:'badge-admin', seller:'badge-verified', user:'badge-user' };
+  return `<span class="badge ${map[r] || 'badge-user'}">${esc(r || 'user')}</span>`;
+}
+
+/* ── DASHBOARD ── */
+async function loadDashboard() {
+  const [
+    { count: total },
+    { count: active },
+    { count: flagged },
+    { count: users },
+    { count: openReports },
+  ] = await Promise.all([
+    supabase.from('listings').select('*', { count: 'exact', head: true }),
+    supabase.from('listings').select('*', { count: 'exact', head: true }).eq('status', 'active'),
+    supabase.from('listings').select('*', { count: 'exact', head: true }).eq('status', 'flagged'),
+    supabase.from('user_profiles').select('*', { count: 'exact', head: true }),
+    supabase.from('reports').select('*', { count: 'exact', head: true }).eq('status', 'open'),
+  ]);
+
+  document.getElementById('stat-listings').textContent = total ?? '—';
+  document.getElementById('stat-active').textContent   = active ?? '—';
+  document.getElementById('stat-flagged').textContent  = flagged ?? '—';
+  document.getElementById('stat-sellers').textContent  = users ?? '—';
+
+  // Show reports badge
+  if (openReports > 0) {
+    const badge = document.getElementById('reports-badge');
+    badge.textContent = openReports;
+    badge.style.display = 'inline-flex';
+  }
+
+  const { data: recent } = await supabase
+    .from('listings').select('id, title, category, price, status, created_at')
+    .order('created_at', { ascending: false }).limit(8);
+
+  const tbody = document.getElementById('dashRecentBody');
+  if (!recent?.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="table-empty">No listings yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = recent.map(r => `<tr>
+    <td class="td-main td-ellipsis">${esc(r.title)}</td>
+    <td>${esc(r.category || '—')}</td>
+    <td>${fmtPrice(r.price)}</td>
+    <td>${statusBadge(r.status || 'active')}</td>
+    <td>${fmtDate(r.created_at)}</td>
+  </tr>`).join('');
+}
+
+/* ── LISTINGS ── */
+async function loadListings() {
+  const tbody = document.getElementById('listingsBody');
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="7"><span class="inline-spinner"></span>Loading…</td></tr>';
+
+  const { data, error } = await supabase
+    .from('listings').select('id, title, category, price, condition, status, created_at')
+    .order('created_at', { ascending: false });
+
+  if (error) { tbody.innerHTML = '<tr><td colspan="7" class="table-empty">Failed to load.</td></tr>'; return; }
+  allListings = data || [];
+
+  const cats = [...new Set(allListings.map(l => l.category).filter(Boolean))].sort();
+  document.getElementById('listingCatFilter').innerHTML =
+    '<option value="">All categories</option>' + cats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+
+  renderListings();
+}
+
+function renderListings() {
+  const q  = document.getElementById('listingSearch').value.toLowerCase();
+  const st = document.getElementById('listingStatusFilter').value;
+  const ct = document.getElementById('listingCatFilter').value;
+
+  const f = allListings.filter(l =>
+    (!q  || l.title.toLowerCase().includes(q)) &&
+    (!st || (l.status || 'active') === st) &&
+    (!ct || l.category === ct)
+  );
+
+  document.getElementById('listingCount').textContent = f.length + ' listing' + (f.length !== 1 ? 's' : '');
+  const tbody = document.getElementById('listingsBody');
+  if (!f.length) { tbody.innerHTML = '<tr><td colspan="7" class="table-empty">No listings match.</td></tr>'; return; }
+
+  tbody.innerHTML = f.map(l => {
+    const s = l.status || 'active';
+    const t = l.title.replace(/'/g, "\\'");
+    return `<tr>
+      <td class="td-main td-ellipsis">${esc(l.title)}</td>
+      <td>${esc(l.category || '—')}</td>
+      <td>${fmtPrice(l.price)}</td>
+      <td style="font-size:12px;color:var(--text-muted)">${esc(l.condition || '—')}</td>
+      <td>${statusBadge(s)}</td>
+      <td style="white-space:nowrap">${fmtDate(l.created_at)}</td>
+      <td><div class="action-group">
+        ${s !== 'flagged' ? `<button class="btn-action warn"    onclick="setListingStatus('${l.id}','flagged')">Flag</button>` : ''}
+        ${s !== 'active'  ? `<button class="btn-action success" onclick="setListingStatus('${l.id}','active')">Restore</button>` : ''}
+        ${s !== 'removed' ? `<button class="btn-action danger"  onclick="promptRemove('${l.id}','${t}')">Remove</button>` : ''}
+        <button class="btn-action danger" onclick="promptDelete('${l.id}','${t}')">Delete</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+window.filterListings = renderListings;
+
+window.setListingStatus = async function(id, status) {
+  const { error } = await supabase.from('listings').update({ status }).eq('id', id);
+  if (error) { toast('Failed to update.', 'danger'); return; }
+  const item = allListings.find(l => l.id === id);
+  if (item) item.status = status;
+  renderListings();
+  toast('Marked as ' + status + '.', status === 'active' ? 'success' : 'warn');
+};
+window.promptRemove = function(id, title) {
+  showConfirm('Remove listing?', `"${title}" will be hidden from the marketplace.`, () => setListingStatus(id, 'removed'));
+};
+window.promptDelete = function(id, title) {
+  showConfirm('Delete permanently?', `"${title}" will be deleted and cannot be recovered.`, async () => {
+    const { error } = await supabase.from('listings').delete().eq('id', id);
+    if (error) { toast('Delete failed.', 'danger'); return; }
+    allListings = allListings.filter(l => l.id !== id);
+    renderListings();
+    toast('Listing deleted.', 'danger');
+  });
+};
+
+/* ── USERS ── */
+async function loadUsers() {
+  const tbody = document.getElementById('usersBody');
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="6"><span class="inline-spinner"></span>Loading…</td></tr>';
+
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .select('id, email, full_name, role, company, created_at')
+    .order('created_at', { ascending: false });
+
+  if (error) { tbody.innerHTML = '<tr><td colspan="6" class="table-empty">Failed to load.</td></tr>'; return; }
+  allUsers = data || [];
+  renderUsers();
+}
+
+function renderUsers() {
+  const q    = document.getElementById('userSearch').value.toLowerCase();
+  const role = document.getElementById('userRoleFilter').value;
+
+  const f = allUsers.filter(u =>
+    (!q    || (u.full_name || '').toLowerCase().includes(q) || u.email.toLowerCase().includes(q)) &&
+    (!role || u.role === role)
+  );
+
+  document.getElementById('userCount').textContent = f.length + ' user' + (f.length !== 1 ? 's' : '');
+  const tbody = document.getElementById('usersBody');
+  if (!f.length) { tbody.innerHTML = '<tr><td colspan="6" class="table-empty">No users found.</td></tr>'; return; }
+
+  tbody.innerHTML = f.map(u => `<tr>
+    <td class="td-main">${esc(u.full_name || '—')}</td>
+    <td style="font-size:12.5px;color:var(--text-muted)">${esc(u.email)}</td>
+    <td>${roleBadge(u.role)}</td>
+    <td style="font-size:13px;color:var(--text-muted)">${esc(u.company || '—')}</td>
+    <td style="white-space:nowrap">${fmtDate(u.created_at)}</td>
+    <td><div class="action-group">
+      ${u.role !== 'admin' ? `<button class="btn-action" onclick="promoteUser('${u.id}','${esc(u.role)}')">
+        ${u.role === 'seller' ? 'Make User' : 'Make Seller'}
+      </button>` : '<span style="color:var(--text-label);font-size:12px">Admin</span>'}
+    </div></td>
+  </tr>`).join('');
+}
+window.filterUsers = renderUsers;
+
+window.promoteUser = async function(id, currentRole) {
+  const newRole = currentRole === 'seller' ? 'user' : 'seller';
+  const { error } = await supabase.from('user_profiles').update({ role: newRole }).eq('id', id);
+  if (error) { toast('Failed to update role.', 'danger'); return; }
+  const u = allUsers.find(u => u.id === id);
+  if (u) u.role = newRole;
+  renderUsers();
+  toast(`Role changed to ${newRole}.`, 'success');
+};
+
+/* ── REPORTS ── */
+async function loadReports() {
+  const tbody = document.getElementById('reportsBody');
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="5"><span class="inline-spinner"></span>Loading…</td></tr>';
+
+  const { data, error } = await supabase
+    .from('reports')
+    .select('id, target_type, reason, status, created_at')
+    .order('created_at', { ascending: false });
+
+  if (error) { tbody.innerHTML = '<tr><td colspan="5" class="table-empty">Failed to load.</td></tr>'; return; }
+  allReports = data || [];
+  renderReports();
+}
+
+function renderReports() {
+  const q    = document.getElementById('reportSearch').value.toLowerCase();
+  const st   = document.getElementById('reportStatusFilter').value;
+  const type = document.getElementById('reportTypeFilter').value;
+
+  const f = allReports.filter(r =>
+    (!q    || r.reason.toLowerCase().includes(q)) &&
+    (!st   || r.status === st) &&
+    (!type || r.target_type === type)
+  );
+
+  document.getElementById('reportCount').textContent = f.length + ' report' + (f.length !== 1 ? 's' : '');
+  const tbody = document.getElementById('reportsBody');
+  if (!f.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="table-empty">No reports match.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = f.map(r => `<tr>
+    <td>${roleBadge(r.target_type)}</td>
+    <td class="td-main td-ellipsis" style="max-width:280px">${esc(r.reason || '—')}</td>
+    <td>${statusBadge(r.status)}</td>
+    <td style="white-space:nowrap">${fmtDate(r.created_at)}</td>
+    <td><div class="action-group">
+      ${r.status !== 'resolved'  ? `<button class="btn-action success" onclick="setReportStatus('${r.id}','resolved')">Resolve</button>` : ''}
+      ${r.status !== 'dismissed' ? `<button class="btn-action" onclick="setReportStatus('${r.id}','dismissed')">Dismiss</button>` : ''}
+      ${r.status !== 'open'      ? `<button class="btn-action warn" onclick="setReportStatus('${r.id}','open')">Reopen</button>` : ''}
+    </div></td>
+  </tr>`).join('');
+}
+window.filterReports = renderReports;
+
+window.setReportStatus = async function(id, status) {
+  const { error } = await supabase.from('reports').update({ status }).eq('id', id);
+  if (error) { toast('Failed to update.', 'danger'); return; }
+  const r = allReports.find(r => r.id === id);
+  if (r) r.status = status;
+  renderReports();
+  toast('Report ' + status + '.', status === 'resolved' ? 'success' : 'warn');
+};
+
+/* ── SETTINGS ── */
+window.saveSettings = function() { toast('Settings saved.', 'success'); };
+</script>
+</body>
+</html>
