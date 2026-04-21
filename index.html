@@ -97,6 +97,8 @@ body {
 ::-webkit-scrollbar-thumb { background: #C0CEEA; border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: #7A90B2; }
 
+@keyframes spin { to { transform: rotate(360deg); } }
+
 a, button, [role="button"] { -webkit-tap-highlight-color: transparent; }
 
 /* ——— GRADIENT TEXT ——— */
@@ -1586,9 +1588,19 @@ textarea.form-input { resize: vertical; min-height: 84px; }
   </div>
 
   <div class="header-actions">
-    <button class="btn-ghost" onclick="openModal('login-modal')">Login</button>
-    <button class="btn-gradient" onclick="openModal('signup-modal')">Sign Up</button>
-    <button class="btn-accent btn-post" onclick="appMode==='services'?openModal('provider-modal'):openModal('post-modal')">+ Post Listing</button>
+    <!-- logged-out state -->
+    <span id="auth-logged-out" style="display:flex;align-items:center;gap:8px">
+      <a href="login.html" class="btn-ghost" style="display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:9999px;font-size:13px;font-weight:500;color:var(--text-secondary);border:1.5px solid var(--border);text-decoration:none;transition:background 0.15s">Login</a>
+      <a href="login.html#signup" class="btn-gradient" style="display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:9999px;font-size:13px;font-weight:500;text-decoration:none;transition:opacity 0.15s">Sign Up</a>
+    </span>
+    <!-- logged-in state (user or seller) — avatar button opens panel -->
+    <span id="auth-logged-in" style="display:none;align-items:center;gap:8px">
+      <button id="pp-trigger" class="pp-avatar-btn" onclick="toggleProfilePanel(event)" aria-label="Account menu">
+        <div id="pp-hdr-avatar" class="pp-hdr-av"></div>
+        <div id="pp-hdr-notif" class="pp-hdr-notif" style="display:none"></div>
+      </button>
+    </span>
+    <a href="create-listing.html" class="btn-accent btn-post" style="display:inline-flex;align-items:center;text-decoration:none">+ Post Listing</a>
   </div>
 </header>
 
@@ -2011,15 +2023,16 @@ textarea.form-input { resize: vertical; min-height: 84px; }
       <div class="modal-sub">Sign in to your UseTrueDeal account</div>
     </div>
     <div class="modal-body">
+      <div id="login-error" style="display:none;padding:9px 12px;border-radius:8px;background:#FFF0EE;border:1px solid #F5C0B8;font-size:12.5px;color:#9D1B0D;margin-bottom:12px"></div>
       <div class="form-group">
         <label class="form-label">Email Address</label>
-        <input type="email" class="form-input" placeholder="you@example.com">
+        <input type="email" class="form-input" id="login-email" placeholder="you@example.com" autocomplete="email">
       </div>
       <div class="form-group">
         <label class="form-label">Password</label>
-        <input type="password" class="form-input" placeholder="••••••••">
+        <input type="password" class="form-input" id="login-password" placeholder="••••••••" autocomplete="current-password">
       </div>
-      <button class="btn-gradient form-submit" onclick="alert('Signed in successfully!')">Sign In</button>
+      <button class="btn-gradient form-submit" id="login-submit-btn" onclick="handleSignIn()">Sign In</button>
       <p style="text-align:center;font-size:0.81rem;color:var(--text-muted);margin-top:14px">
         Don't have an account?
         <span style="color:var(--accent);cursor:pointer;font-weight:500" onclick="closeModal('login-modal');openModal('signup-modal')">Sign up</span>
@@ -2039,19 +2052,20 @@ textarea.form-input { resize: vertical; min-height: 84px; }
       <div class="modal-sub">Join thousands of buyers and sellers</div>
     </div>
     <div class="modal-body">
+      <div id="signup-error" style="display:none;padding:9px 12px;border-radius:8px;background:#FFF0EE;border:1px solid #F5C0B8;font-size:12.5px;color:#9D1B0D;margin-bottom:12px"></div>
       <div class="form-group">
         <label class="form-label">Full Name</label>
-        <input type="text" class="form-input" placeholder="John Doe">
+        <input type="text" class="form-input" id="signup-name" placeholder="John Doe" autocomplete="name">
       </div>
       <div class="form-group">
         <label class="form-label">Email Address</label>
-        <input type="email" class="form-input" placeholder="you@example.com">
+        <input type="email" class="form-input" id="signup-email" placeholder="you@example.com" autocomplete="email">
       </div>
       <div class="form-group">
         <label class="form-label">Password</label>
-        <input type="password" class="form-input" placeholder="Create a strong password">
+        <input type="password" class="form-input" id="signup-password" placeholder="Create a strong password" autocomplete="new-password">
       </div>
-      <button class="btn-gradient form-submit" onclick="alert('Account created successfully!')">Create Account</button>
+      <button class="btn-gradient form-submit" id="signup-submit-btn" onclick="handleSignUp()">Create Account</button>
       <p style="text-align:center;font-size:0.81rem;color:var(--text-muted);margin-top:14px">
         Already have an account?
         <span style="color:var(--accent);cursor:pointer;font-weight:500" onclick="closeModal('signup-modal');openModal('login-modal')">Sign in</span>
@@ -2322,9 +2336,10 @@ textarea.form-input { resize: vertical; min-height: 84px; }
 // ============================================================
 //  DATA
 // ============================================================
-var LISTINGS = [
-  // ---- Vehicles: Cars ----
-  { id:100, title:"2022 Toyota Camry XSE V6",            description:"One owner, factory warranty remaining. Panoramic sunroof, leather seats, backup camera. Excellent condition.",                                                        category:"Vehicles", subcategory:"Cars", brand:"Toyota",    model:"Camry",      location:"Los Angeles, CA",    condition:"Like New", price:"" },
+var LISTINGS = [];
+var _listingsLoaded = false;
+
+/* placeholder — replaced by: { id:100, title:"2022 Toyota Camry XSE V6",            description:"One owner, factory warranty remaining. Panoramic sunroof, leather seats, backup camera. Excellent condition.",                                                        category:"Vehicles", subcategory:"Cars", brand:"Toyota",    model:"Camry",      location:"Los Angeles, CA",    condition:"Like New", price:"" },
   { id:101, title:"2020 Toyota RAV4 XLE Premium AWD",    description:"All-wheel drive, heated front seats, power liftgate, Apple CarPlay. Clean Carfax, no accidents.",                                                                     category:"Vehicles", subcategory:"Cars", brand:"Toyota",    model:"RAV4",       location:"Seattle, WA",        condition:"Used",     price:"" },
   { id:102, title:"2021 Honda Civic Sport Hatchback",    description:"5-door, 6-speed manual, sport trim. Honda Sensing suite, 18-inch wheels, turbocharged engine.",                                                                       category:"Vehicles", subcategory:"Cars", brand:"Honda",     model:"Civic",      location:"Austin, TX",         condition:"Used",     price:"" },
   { id:103, title:"2023 Honda CR-V Hybrid EX-L",         description:"Hybrid powertrain, all-wheel drive, heated seats, sunroof. Under 12,000 miles.",                                                                                      category:"Vehicles", subcategory:"Cars", brand:"Honda",     model:"CR-V",       location:"Boston, MA",         condition:"Like New", price:"" },
@@ -2428,9 +2443,7 @@ var LISTINGS = [
   { id:41, title:"NASM-Certified Personal Trainer",     description:"In-home and online sessions available. Custom training and nutrition plans. 10+ years experience, injury rehabilitation specialty.",      category:"Services",    subcategory:"Lessons & Tutoring", location:"Miami, FL",          condition:"N/A",      price:"$65/session" },
   { id:42, title:"Licensed Handyman — All Repairs",    description:"Drywall, plumbing, electrical, tile work. Licensed and insured. Free estimate, same-week scheduling available in metro area.",             category:"Services",    subcategory:"Handyman",           location:"Chicago, IL",        condition:"N/A",      price:"$55/hr" },
   { id:43, title:"Professional Pet Sitting & Walking",  description:"Insured pet care specialist. Daily walks, overnight stays, feeding schedules. GPS updates and photo check-ins with every visit.",         category:"Services",    subcategory:"Pet Care",           location:"Seattle, WA",        condition:"N/A",      price:"From $20/visit" },
-  { id:44, title:"Free Moving Boxes — All Sizes",       description:"About 35 boxes from recent move. Small, medium and large sizes. Mostly great condition. Must take all at once — free to good home.",       category:"Free Stuff",  subcategory:"Household Items",    location:"Seattle, WA",        condition:"Used",     price:"Free" },
-  { id:45, title:"Free Succulent & Cactus Collection",  description:"Downsizing indoor plant collection. 12 healthy succulents and cacti in terracotta pots. Perfect for beginners. Pick up only.",           category:"Free Stuff",  subcategory:"Garden",             location:"Austin, TX",         condition:"Good",     price:"Free" }
-];
+legacy mock data end */
 
 var CATEGORIES_DATA = {
   "Vehicles": {
@@ -2612,7 +2625,8 @@ var VEHICLE_BRANDS = {
   }
 };
 
-var CONDITIONS = ["Any","New","Like New","Good","Used","For Parts"];
+var CONDITIONS = ["Any","New","Like New","Good","Fair","Poor"];
+var CONDITION_DB_MAP = { "New":"new", "Like New":"like_new", "Good":"good", "Fair":"fair", "Poor":"poor" };
 
 var POPULAR_SEARCHES = ["iPhone 14","Gaming PC","Apartment NYC","Tesla","MacBook Pro","Free Furniture","Remote Jobs","Sony Headphones"];
 
@@ -3807,7 +3821,8 @@ function getFilteredListings() {
     results = results.filter(function(l) { return l.subcategory === state.activeSubcategory; });
   }
   if (state.activeCondition && state.activeCondition !== 'Any') {
-    results = results.filter(function(l) { return l.condition === state.activeCondition; });
+    var dbCond = CONDITION_DB_MAP[state.activeCondition] || state.activeCondition.toLowerCase();
+    results = results.filter(function(l) { return l.condition === dbCond; });
   }
   var locFilter = document.getElementById('location-filter').value;
   if (locFilter) {
@@ -3860,6 +3875,21 @@ function renderListings() {
   }
   var oldLoadMore = document.getElementById('load-more-btn');
   if (oldLoadMore) oldLoadMore.parentNode.removeChild(oldLoadMore);
+
+  // Show loading skeleton while DB fetch is pending
+  if (!_listingsLoaded) {
+    emptyState.classList.remove('show');
+    countEl.innerHTML = 'Loading listings…';
+    var loadingEl = document.createElement('div');
+    loadingEl.id = 'listings-loading';
+    loadingEl.style.cssText = 'grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-muted);font-size:14px';
+    loadingEl.innerHTML = '<div style="width:32px;height:32px;border:3px solid var(--border-color);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 14px"></div>Loading listings…';
+    grid.appendChild(loadingEl);
+    return;
+  }
+
+  var loadingEl2 = document.getElementById('listings-loading');
+  if (loadingEl2) loadingEl2.parentNode.removeChild(loadingEl2);
 
   if (results.length === 0) {
     emptyState.classList.add('show');
@@ -3924,7 +3954,7 @@ function createCard(listing) {
 
   var color = CAT_COLORS[listing.category] || '#9CA3AF';
   var condClass = getCondClass(listing.condition);
-  var condLabel = listing.condition === 'N/A' ? 'Open' : listing.condition;
+  var condLabel = fmtCondLabel(listing.condition);
   var rgb = hexToRgb(color);
   var icon = CAT_SVG_ICONS[listing.category] || CAT_SVG_ICONS['Services'];
   var priceHtml = '';
@@ -3941,11 +3971,14 @@ function createCard(listing) {
     priceHtml = '<span class="card-price contact">Contact for price</span>';
   }
 
+  var imageAreaInner = listing.image_url
+    ? '<img src="' + escHtml(listing.image_url) + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+      '<div class="card-image-area-inner" style="display:none"><div class="card-image-icon" style="color:' + color + '">' + icon + '</div></div>'
+    : '<div class="card-image-area-inner"><div class="card-image-icon" style="color:' + color + '">' + icon + '</div></div>';
+
   card.innerHTML =
-    '<div class="card-image-area" style="background:linear-gradient(145deg,rgba(' + rgb + ',0.10) 0%,rgba(' + rgb + ',0.05) 100%)">' +
-      '<div class="card-image-area-inner">' +
-        '<div class="card-image-icon" style="color:' + color + '">' + icon + '</div>' +
-      '</div>' +
+    '<div class="card-image-area" style="background:linear-gradient(145deg,rgba(' + rgb + ',0.10) 0%,rgba(' + rgb + ',0.05) 100%);overflow:hidden">' +
+      imageAreaInner +
       '<span class="cond-badge cond-badge-img ' + condClass + '">' + escHtml(condLabel) + '</span>' +
     '</div>' +
     '<div class="card-body">' +
@@ -3966,10 +3999,10 @@ function createCard(listing) {
     '</div>';
 
   (function(id) {
-    card.addEventListener('click', function() { openDetail(id); });
+    card.addEventListener('click', function() { window.location.href = 'listing-detail.html?id=' + encodeURIComponent(id); });
     card.querySelector('.view-btn').addEventListener('click', function(e) {
       e.stopPropagation();
-      openDetail(id);
+      window.location.href = 'listing-detail.html?id=' + encodeURIComponent(id);
     });
   })(listing.id);
 
@@ -3977,8 +4010,20 @@ function createCard(listing) {
 }
 
 function getCondClass(cond) {
-  var map = { 'New':'cond-new', 'Like New':'cond-likenew', 'Good':'cond-good', 'Used':'cond-used', 'For Parts':'cond-forparts', 'N/A':'cond-na' };
+  var map = {
+    'new':'cond-new', 'New':'cond-new',
+    'like_new':'cond-likenew', 'Like New':'cond-likenew',
+    'good':'cond-good', 'Good':'cond-good',
+    'fair':'cond-used', 'Used':'cond-used',
+    'poor':'cond-forparts', 'For Parts':'cond-forparts',
+    'N/A':'cond-na'
+  };
   return map[cond] || 'cond-na';
+}
+
+function fmtCondLabel(cond) {
+  var map = { 'new':'New', 'like_new':'Like New', 'good':'Good', 'fair':'Fair', 'poor':'Poor' };
+  return map[cond] || cond || 'N/A';
 }
 
 function hexToRgb(hex) {
@@ -4141,12 +4186,28 @@ function resetAll() {
 // ============================================================
 var SELLER_NAMES = ["Alex M.", "Sarah K.", "James W.", "Maria L.", "David C.", "Emma R.", "Noah T.", "Olivia B."];
 
+function trackRecentlyViewed(listing) {
+  try {
+    var RV_KEY = 'utd_recently_viewed';
+    var items = JSON.parse(localStorage.getItem(RV_KEY) || '[]');
+    items = items.filter(function(x) { return x.id !== listing.id; });
+    items.unshift({
+      id:        listing.id,
+      title:     listing.title,
+      price:     listing.price === 'Free' ? 'Free' : '$' + listing.price,
+      image_url: listing.image_url || ''
+    });
+    localStorage.setItem(RV_KEY, JSON.stringify(items.slice(0, 8)));
+  } catch(e) {}
+}
+
 function openDetail(id) {
   var listing = null;
   for (var i = 0; i < LISTINGS.length; i++) {
     if (LISTINGS[i].id === id) { listing = LISTINGS[i]; break; }
   }
   if (!listing) return;
+  trackRecentlyViewed(listing);
 
   var color = CAT_COLORS[listing.category] || '#9CA3AF';
   var rgb = hexToRgb(color);
@@ -4216,7 +4277,11 @@ function openDetail(id) {
 
   // Wire up buttons
   document.getElementById('detail-contact-btn').addEventListener('click', function() {
-    alert('Contact form would open here. You can message ' + sellerName + ' directly.');
+    if(typeof openMessageSeller === 'function'){
+      openMessageSeller(listing.id, listing.title, sellerName);
+    } else {
+      window.location.href = 'inbox.html';
+    }
   });
   var saveBtn = document.getElementById('detail-save-btn');
   saveBtn.addEventListener('click', function() {
@@ -4803,6 +4868,829 @@ function renderCDPListings() {
 //  BOOT
 // ============================================================
 document.addEventListener('DOMContentLoaded', init);
+</script>
+
+<!-- ══════════════════════════════════════════
+     PROFILE PANEL — HTML + CSS
+══════════════════════════════════════════ -->
+<style>
+/* ── avatar trigger ── */
+.pp-avatar-btn{position:relative;width:34px;height:34px;border-radius:50%;border:none;padding:0;cursor:pointer;background:none;flex-shrink:0;transition:transform .14s var(--ease)}
+.pp-avatar-btn:hover{transform:scale(1.06)}
+.pp-avatar-btn:active{transform:scale(.96)}
+.pp-hdr-av{width:34px;height:34px;border-radius:50%;border:2px solid var(--border-mid);background:linear-gradient(135deg,#1845D1,#2563EB);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;overflow:hidden;transition:border-color .14s}
+.pp-avatar-btn:hover .pp-hdr-av,.pp-avatar-btn[aria-expanded=true] .pp-hdr-av{border-color:var(--accent)}
+.pp-hdr-av img{width:100%;height:100%;object-fit:cover}
+.pp-hdr-notif{position:absolute;top:-1px;right:-1px;width:10px;height:10px;border-radius:50%;background:#EF4444;border:2px solid #fff;pointer-events:none}
+
+/* ── panel backdrop ── */
+.pp-backdrop{position:fixed;inset:0;z-index:1199;background:transparent;display:none}
+.pp-backdrop.open{display:block}
+
+/* ── floating panel ── */
+.pp-panel{position:fixed;top:62px;right:14px;z-index:1200;width:248px;background:#fff;border-radius:14px;box-shadow:0 0 0 1px rgba(10,22,40,.07),0 4px 6px rgba(10,22,40,.04),0 12px 32px rgba(10,22,40,.12);overflow:hidden;transform-origin:top right;transform:scale(.94) translateY(-6px);opacity:0;pointer-events:none;transition:transform .2s cubic-bezier(.22,1,.36,1),opacity .16s ease}
+.pp-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+
+/* ── identity row ── */
+.pp-identity{display:flex;align-items:center;gap:10px;padding:13px 12px 11px;border-bottom:1px solid #F0F2F8}
+.pp-id-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1845D1,#2563EB);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0}
+.pp-id-av img{width:100%;height:100%;object-fit:cover}
+.pp-id-info{flex:1;min-width:0}
+.pp-id-name{font-size:13.5px;font-weight:700;color:#0A1628;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.012em;line-height:1.2}
+.pp-id-sub{font-size:11px;color:#7A90B2;margin-top:1px;font-weight:400}
+.pp-id-edit{width:28px;height:28px;border-radius:8px;border:1px solid #E4E8F0;background:#F7F8FA;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:#6B7A96;transition:background .12s,color .12s}
+.pp-id-edit:hover{background:#EAF0FF;color:#1845D1;border-color:#C0D4FF}
+
+/* ── menu list ── */
+.pp-menu{padding:6px;display:flex;flex-direction:column;gap:1px}
+.pp-menu-item{display:flex;align-items:center;gap:10px;height:36px;padding:0 9px;border-radius:8px;font-size:13px;font-weight:500;color:#1A2B4A;cursor:pointer;transition:background .1s;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;text-align:left;position:relative}
+.pp-menu-item:hover{background:#F5F6FA}
+.pp-menu-item svg{flex-shrink:0;color:#7A90B2}
+.pp-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9999px;background:#EF4444;color:#fff;font-size:10px;font-weight:700;line-height:1}
+.pp-divider{height:1px;background:#F0F2F8;margin:4px 6px}
+
+/* ── sub-panels ── */
+.pp-sub{display:none;flex-direction:column;height:100%}
+.pp-sub.active{display:flex}
+.pp-sub-hdr{display:flex;align-items:center;gap:8px;padding:12px 14px 10px;border-bottom:1px solid #F0F2F7}
+.pp-sub-back{width:28px;height:28px;border-radius:50%;border:none;background:#F4F6FB;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .12s}
+.pp-sub-back:hover{background:#EAF0FF}
+.pp-sub-title{font-size:14px;font-weight:600;color:#0A1628;letter-spacing:-.01em}
+.pp-sub-body{flex:1;overflow-y:auto;padding:10px 12px 12px;max-height:340px}
+.pp-sub-body::-webkit-scrollbar{width:4px}
+.pp-sub-body::-webkit-scrollbar-track{background:transparent}
+.pp-sub-body::-webkit-scrollbar-thumb{background:#DDE3EF;border-radius:9999px}
+
+/* ── sub-panel: password change ── */
+.pp-field{margin-bottom:10px}
+.pp-field label{display:block;font-size:11.5px;font-weight:500;color:#4E6180;margin-bottom:3px}
+.pp-field input{width:100%;height:36px;padding:0 10px;border:1.5px solid #DDE3EF;border-radius:8px;font-family:inherit;font-size:13px;color:#0A1628;outline:none;background:#fff;transition:border-color .13s,box-shadow .13s}
+.pp-field input:focus{border-color:#1845D1;box-shadow:0 0 0 3px rgba(24,69,209,.1)}
+.pp-save-btn{width:100%;height:34px;border-radius:9999px;background:#1845D1;color:#fff;font-size:12.5px;font-weight:600;border:none;cursor:pointer;transition:background .13s;margin-top:4px}
+.pp-save-btn:hover{background:#2050E8}
+.pp-save-btn:disabled{background:#AFC8FA;cursor:not-allowed}
+.pp-msg{font-size:12px;padding:7px 10px;border-radius:7px;margin-bottom:8px;display:none}
+.pp-msg.success{background:#E3FAF0;color:#026B40;border:1px solid #A8E8CA}
+.pp-msg.error{background:#FFF0EE;color:#9D1B0D;border:1px solid #F5C0B8}
+
+/* ── sub-panel: settings ── */
+.pp-setting-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F0F2F7}
+.pp-setting-row:last-child{border-bottom:none}
+.pp-setting-label{font-size:12.5px;font-weight:500;color:#0A1628}
+.pp-setting-sub{font-size:11px;color:#7A90B2;margin-top:1px}
+.pp-toggle{width:34px;height:19px;border-radius:9999px;background:#DDE3EF;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.pp-toggle.on{background:#1845D1}
+.pp-toggle::after{content:'';position:absolute;top:2.5px;left:2.5px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .18s cubic-bezier(.22,1,.36,1);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.pp-toggle.on::after{transform:translateX(15px)}
+
+/* ── sub-panel: empty state ── */
+.pp-empty{text-align:center;padding:28px 12px;color:#7A90B2;font-size:12.5px}
+.pp-empty svg{margin:0 auto 8px;color:#C0CEEA}
+
+/* ── sub-panel: listing mini card ── */
+.pp-listing-row{display:flex;gap:9px;padding:7px 0;border-bottom:1px solid #F0F2F7;align-items:center}
+.pp-listing-row:last-child{border-bottom:none}
+.pp-listing-img{width:42px;height:42px;border-radius:7px;object-fit:cover;background:#F4F6FB;flex-shrink:0;border:1px solid #F0F2F7}
+.pp-listing-info{flex:1;min-width:0}
+.pp-listing-title{font-size:12.5px;font-weight:600;color:#0A1628;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-listing-price{font-size:12px;font-weight:700;color:#1845D1}
+.pp-listing-meta{font-size:11px;color:#7A90B2}
+.pp-lbadge{display:inline-block;height:16px;padding:0 5px;border-radius:9999px;font-size:9.5px;font-weight:600;line-height:16px}
+.pp-lbadge-active{background:#E3FAF0;color:#026B40}
+.pp-lbadge-sold{background:#F4F6FB;color:#7A90B2}
+
+/* ── notification item ── */
+.pp-notif-item{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid #F0F2F7;align-items:flex-start}
+.pp-notif-item:last-child{border-bottom:none}
+.pp-notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.pp-notif-dot.unread{background:#1845D1}
+.pp-notif-dot.read{background:#DDE3EF}
+.pp-notif-text{font-size:12.5px;color:#344260;line-height:1.5;flex:1}
+.pp-notif-time{font-size:10.5px;color:#7A90B2;flex-shrink:0;margin-top:2px}
+
+/* ── edit profile sub-panel ── */
+.pp-avatar-upload{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.pp-av-preview{width:44px;height:44px;border-radius:50%;border:2px solid #DDE3EF;background:linear-gradient(135deg,#1845D1,#2563EB);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0}
+.pp-av-preview img{width:100%;height:100%;object-fit:cover}
+
+/* ── inbox preview items ── */
+.pp-inbox-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;transition:background .1s}
+.pp-inbox-item:hover{background:#F5F6FA}
+.pp-inbox-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1845D1,#2563EB);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0}
+
+/* ── responsive ── */
+@media(max-width:400px){
+  .pp-panel{right:8px;left:8px;width:auto}
+}
+</style>
+
+<!-- Profile panel markup -->
+<!-- ══ MESSAGE SELLER MODAL ══ -->
+<div class="overlay" id="msgSellerOverlay" onclick="if(event.target===this)closeMsgSeller()" style="position:fixed;inset:0;z-index:3000;background:rgba(10,22,40,.35);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s">
+  <div style="background:#fff;border-radius:14px;width:100%;max-width:420px;margin:0 16px;box-shadow:0 20px 60px rgba(10,22,40,.18);transform:scale(.96) translateY(8px);transition:transform .22s cubic-bezier(.22,1,.36,1)" id="msgSellerBox">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid #E4E8F0">
+      <div>
+        <div style="font-size:15px;font-weight:700;color:#0A1628;letter-spacing:-.012em" id="msgSellerTitle">Message Seller</div>
+        <div style="font-size:12px;color:#6B7A96;margin-top:1px" id="msgSellerSub"></div>
+      </div>
+      <button onclick="closeMsgSeller()" style="width:28px;height:28px;border-radius:6px;border:none;background:#F7F8FA;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6B7A96">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg>
+      </button>
+    </div>
+    <div style="padding:16px 20px 20px;display:flex;flex-direction:column;gap:12px">
+      <div id="msgSellerFeedback" style="font-size:12.5px;padding:8px 12px;border-radius:6px;display:none"></div>
+      <div>
+        <div style="font-size:11.5px;font-weight:600;color:#6B7A96;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px">Your message</div>
+        <textarea id="msgSellerText" rows="4" style="width:100%;padding:10px 12px;border:1.5px solid #E4E8F0;border-radius:10px;font-family:inherit;font-size:13.5px;color:#0A1628;outline:none;resize:vertical;min-height:90px;line-height:1.5;transition:border-color .13s,box-shadow .13s;background:#fff" placeholder="Hi, is this still available?…" onfocus="this.style.borderColor='#1845D1';this.style.boxShadow='0 0 0 3px rgba(24,69,209,.1)'" onblur="this.style.borderColor='#E4E8F0';this.style.boxShadow='none'"></textarea>
+      </div>
+      <button id="msgSellerSendBtn" onclick="sendMsgToSeller()" style="width:100%;height:40px;border-radius:9999px;background:#1845D1;color:#fff;font-size:13.5px;font-weight:600;border:none;cursor:pointer;transition:background .15s;font-family:inherit">Send Message</button>
+      <p style="font-size:11.5px;color:#9099AE;text-align:center">You must be logged in to message sellers.</p>
+    </div>
+  </div>
+</div>
+
+<div class="pp-backdrop" id="ppBackdrop" onclick="closeProfilePanel()"></div>
+
+<div class="pp-panel" id="ppPanel" role="dialog" aria-label="Account panel">
+
+  <!-- ── VIEW: MAIN ── -->
+  <div id="ppMain">
+    <!-- Identity row -->
+    <div class="pp-identity">
+      <div class="pp-id-av" id="ppUcAv"></div>
+      <div class="pp-id-info">
+        <div class="pp-id-name" id="ppUcName">Loading…</div>
+        <div class="pp-id-sub" id="ppUcTag">Trusted Seller</div>
+      </div>
+      <button class="pp-id-edit" onclick="showPpSub('edit')" title="Edit profile">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 2l2 2-7 7H3v-2L10 2z"/></svg>
+      </button>
+    </div>
+
+    <!-- Menu list -->
+    <div class="pp-menu">
+      <a href="profile.html" class="pp-menu-item" onclick="closeProfilePanel()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="5.5" r="3"/><path d="M2 14c0-3.31 2.69-6 6-6s6 2.69 6 6"/></svg>
+        Profile
+      </a>
+      <a href="profile.html#listings" class="pp-menu-item" onclick="closeProfilePanel()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+        My Listings
+      </a>
+      <a href="profile.html#saved" class="pp-menu-item" onclick="closeProfilePanel()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2h10a1 1 0 011 1v11l-6-3-6 3V3a1 1 0 011-1z"/></svg>
+        Saved
+      </a>
+      <button class="pp-menu-item" onclick="showPpSub('messages')">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 10.67A2 2 0 0012.11 12H10a2 2 0 01-2-2V5a2 2 0 012-2h4a2 2 0 012 2v3.89z"/><path d="M6 4H4a2 2 0 00-2 2v5a2 2 0 002 2h.5l1.5 2 1.5-2H8a2 2 0 002-2v-1"/></svg>
+        Messages
+        <span class="pp-badge" id="ppMsgBadge" style="display:none;margin-left:auto">0</span>
+      </button>
+      <button class="pp-menu-item" onclick="showPpSub('notifications')">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2a5 5 0 015 5v3l1.5 2H2L3.5 10V7a5 5 0 015-5z"/><path d="M7 13.5a1 1 0 002 0"/></svg>
+        Notifications
+        <span class="pp-badge" id="ppNotifBadge" style="display:none;margin-left:auto">0</span>
+      </button>
+      <div class="pp-divider"></div>
+      <button class="pp-menu-item" style="color:#DC2626" onclick="ppSignOut()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M11 11l3-3-3-3M14 8H6"/></svg>
+        Sign Out
+      </button>
+    </div>
+  </div><!-- /ppMain -->
+
+  <!-- ══ SUB-PANEL: EDIT PROFILE ══ -->
+  <div class="pp-sub" id="ppSub-edit">
+    <div class="pp-sub-hdr">
+      <button class="pp-sub-back" onclick="showPpSub(null)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 3L5 7l4 4"/></svg></button>
+      <span class="pp-sub-title">Edit Profile</span>
+    </div>
+    <div class="pp-sub-body">
+      <div class="pp-msg" id="ppEditMsg"></div>
+      <div class="pp-avatar-upload">
+        <div class="pp-av-preview" id="ppEditAvPreview"></div>
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:500;color:#344260;margin-bottom:3px">Avatar URL</div>
+          <input type="url" id="ppEditAvUrl" placeholder="https://…" style="width:100%;height:30px;padding:0 8px;border:1.5px solid #DDE3EF;border-radius:7px;font-family:inherit;font-size:12px;color:#0A1628;outline:none;background:#fff" oninput="ppPreviewAvatar(this.value)">
+        </div>
+      </div>
+      <div class="pp-field"><label>Full Name</label><input type="text" id="ppEditName"></div>
+      <div class="pp-field"><label>Bio</label><textarea id="ppEditBio" style="width:100%;padding:8px 10px;border:1.5px solid #DDE3EF;border-radius:8px;font-family:inherit;font-size:13px;color:#0A1628;outline:none;resize:vertical;min-height:66px;line-height:1.5;background:#fff" oninput="ppResizeTextarea(this)"></textarea></div>
+      <div class="pp-field"><label>Company</label><input type="text" id="ppEditCompany" placeholder="Optional"></div>
+      <div class="pp-field"><label>Location</label><input type="text" id="ppEditLocation" placeholder="e.g. San Francisco, CA"></div>
+      <button class="pp-save-btn" id="ppEditSaveBtn" onclick="ppSaveEdit()">Save changes</button>
+    </div>
+  </div>
+
+  <!-- ══ SUB-PANEL: MESSAGES ══ -->
+  <div class="pp-sub" id="ppSub-messages">
+    <div class="pp-sub-hdr">
+      <button class="pp-sub-back" onclick="showPpSub(null)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 3L5 7l4 4"/></svg></button>
+      <span class="pp-sub-title">Messages</span>
+      <a href="inbox.html" style="margin-left:auto;font-size:11.5px;font-weight:500;color:#1845D1;text-decoration:none" onclick="closeProfilePanel()">View all</a>
+    </div>
+    <div class="pp-sub-body" id="ppMsgBody">
+      <div style="text-align:center;padding:20px;color:#9099AE;font-size:12px">Loading…</div>
+    </div>
+  </div>
+
+  <!-- ══ SUB-PANEL: NOTIFICATIONS ══ -->
+  <div class="pp-sub" id="ppSub-notifications">
+    <div class="pp-sub-hdr">
+      <button class="pp-sub-back" onclick="showPpSub(null)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 3L5 7l4 4"/></svg></button>
+      <span class="pp-sub-title">Notifications</span>
+      <a href="notifications.html" style="margin-left:auto;font-size:11.5px;font-weight:500;color:#1845D1;text-decoration:none" onclick="closeProfilePanel()">View all</a>
+    </div>
+    <div class="pp-sub-body" id="ppNotifBody">
+      <div style="text-align:center;padding:20px;color:#9099AE;font-size:12px">Loading…</div>
+    </div>
+  </div>
+
+
+</div><!-- /ppPanel -->
+
+<!-- ── AUTH + PROFILE PANEL MODULE ── -->
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL      = 'https://qohwjeybvfajihljtxrx.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvaHdqZXlidmZhamlobGp0eHJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NjMyNDgsImV4cCI6MjA5MjEzOTI0OH0.YuueGczgwOOOORfcb43kW2CFkLWRK7SYURgfBXFASro';
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+});
+
+/* ── state ── */
+let _user    = null;
+let _profile = null;
+let _panelOpen = false;
+
+/* ── tiny helpers ── */
+function ini(n){ return (n||'?').split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase(); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtNum(n){ return n == null ? '—' : Number(n) >= 1000 ? (Number(n)/1000).toFixed(1)+'k' : String(n); }
+
+function ppShowToast(msg, type='success'){
+  let t = document.getElementById('pp-toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'pp-toast';
+    t.style.cssText='position:fixed;bottom:20px;right:20px;z-index:9999;background:#0A1628;color:#fff;font-size:12.5px;font-weight:500;height:36px;padding:0 14px;border-radius:9999px;display:flex;align-items:center;gap:7px;box-shadow:0 4px 20px rgba(10,22,40,.22);opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .18s,transform .18s;font-family:inherit';
+    document.body.appendChild(t);
+  }
+  const dot = type==='success' ? '#4ADE80' : type==='error' ? '#F87171' : '#60A5FA';
+  t.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:${dot};flex-shrink:0"></span>${esc(msg)}`;
+  t.style.opacity='1'; t.style.transform='translateY(0)';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(8px)'; }, 3000);
+}
+
+/* ── auth: get full profile ── */
+async function getProfile(userId){
+  const { data } = await supabase
+    .from('user_profiles')
+    .select('id,role,email,full_name,avatar_url,bio,company,followers_count,created_at')
+    .eq('id', userId)
+    .maybeSingle();
+  return data;
+}
+
+/* ── render avatar (header button) ── */
+function renderHeaderAvatar(profile){
+  const av = document.getElementById('pp-hdr-avatar');
+  if(!av) return;
+  const name = profile?.full_name || _user?.email?.split('@')[0] || '?';
+  if(profile?.avatar_url){
+    av.innerHTML = `<img src="${esc(profile.avatar_url)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else {
+    av.textContent = ini(name);
+  }
+}
+
+/* ── render panel user card ── */
+function renderPanelCard(profile){
+  const name = profile?.full_name || _user?.email?.split('@')[0] || 'User';
+  const role = profile?.role || 'user';
+  const tag  = role === 'seller' ? 'Trusted Seller' : role === 'admin' ? 'Administrator' : 'Marketplace Member';
+
+  // avatar
+  const ucAv = document.getElementById('ppUcAv');
+  if(ucAv){
+    if(profile?.avatar_url){
+      ucAv.innerHTML = `<img src="${esc(profile.avatar_url)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover">`;
+    } else {
+      ucAv.textContent = ini(name);
+    }
+  }
+  const nameEl = document.getElementById('ppUcName');
+  if(nameEl) nameEl.textContent = name;
+  const tagEl  = document.getElementById('ppUcTag');
+  if(tagEl)  tagEl.textContent  = tag;
+
+  // populate edit form
+  const ef = {
+    ppEditName:     profile?.full_name   || '',
+    ppEditBio:      profile?.bio         || '',
+    ppEditCompany:  profile?.company     || '',
+    ppEditAvUrl:    profile?.avatar_url  || '',
+  };
+  Object.entries(ef).forEach(([id,val])=>{ const el=document.getElementById(id); if(el) el.value=val; });
+  ppPreviewAvatar(profile?.avatar_url || '');
+}
+
+/* ── fetch real unread counts and update badges ── */
+async function renderPanelUnread(userId){
+  if(!userId) return;
+  const [msgRes, notifRes] = await Promise.all([
+    supabase.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',userId).eq('read',false),
+    supabase.from('notifications').select('id',{count:'exact',head:true}).eq('user_id',userId).eq('read',false)
+  ]);
+  const msgCount   = msgRes.count   || 0;
+  const notifCount = notifRes.count || 0;
+  const msgBadge   = document.getElementById('ppMsgBadge');
+  const notifBadge = document.getElementById('ppNotifBadge');
+  const notifDot   = document.getElementById('pp-hdr-notif');
+  if(msgBadge){   msgBadge.textContent   = msgCount;   msgBadge.style.display   = msgCount   > 0 ? '' : 'none'; }
+  if(notifBadge){ notifBadge.textContent = notifCount; notifBadge.style.display = notifCount > 0 ? '' : 'none'; }
+  if(notifDot)    notifDot.style.display = (msgCount + notifCount > 0) ? '' : 'none';
+}
+
+/* ── show/hide auth UI ── */
+function showAuthUI(profile, user){
+  const out = document.getElementById('auth-logged-out');
+  const inn = document.getElementById('auth-logged-in');
+  out.style.display = 'none';
+  inn.style.display = 'none';
+
+  if(!user){ out.style.display = 'flex'; return; }
+  inn.style.display = 'flex';
+  renderHeaderAvatar(profile);
+  if(profile){ renderPanelCard(profile); renderPanelUnread(user?.id); }
+}
+
+/* ── page load ── */
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session){ showAuthUI(null, null); return; }
+  _user = session.user;
+  const profile = await getProfile(session.user.id);
+  _profile = profile;
+  if(profile?.role === 'admin'){ window.location.replace('admin.html'); return; }
+  showAuthUI(profile, session.user);
+})();
+
+/* ── after sign-in ── */
+supabase.auth.onAuthStateChange((event, session) => {
+  if(event === 'SIGNED_OUT'){ showAuthUI(null, null); return; }
+  if(event !== 'SIGNED_IN' || !session) return;
+  (async () => {
+    _user = session.user;
+    const profile = await getProfile(session.user.id);
+    _profile = profile;
+    if(profile?.role === 'admin'){ window.location.replace('admin.html'); return; }
+    showAuthUI(profile, session.user);
+  })();
+});
+
+/* ══════════════════════════════════════
+   PANEL OPEN / CLOSE / NAV
+══════════════════════════════════════ */
+window.toggleProfilePanel = function(e){
+  e?.stopPropagation();
+  _panelOpen ? closeProfilePanel() : openProfilePanel();
+};
+function openProfilePanel(){
+  _panelOpen = true;
+  document.getElementById('ppPanel').classList.add('open');
+  document.getElementById('ppBackdrop').classList.add('open');
+  document.getElementById('pp-trigger')?.setAttribute('aria-expanded','true');
+}
+window.closeProfilePanel = function(){
+  _panelOpen = false;
+  document.getElementById('ppPanel').classList.remove('open');
+  document.getElementById('ppBackdrop').classList.remove('open');
+  document.getElementById('pp-trigger')?.removeAttribute('aria-expanded');
+  setTimeout(()=>showPpSub(null), 220);
+};
+
+/* close on Escape */
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && _panelOpen) closeProfilePanel(); });
+
+/* ── sub-panel navigation ── */
+window.showPpSub = function(name){
+  document.getElementById('ppMain').style.display = name ? 'none' : '';
+  document.querySelectorAll('.pp-sub').forEach(s=>s.classList.remove('active'));
+  if(name){
+    document.getElementById('ppSub-'+name)?.classList.add('active');
+    if(name === 'messages')     loadPanelMessages();
+    if(name === 'notifications') loadPanelNotifications();
+  }
+};
+
+/* ── helpers ── */
+function fmtTimeShort(iso){
+  if(!iso) return '';
+  const d=new Date(iso),now=new Date(),diff=(now-d)/1000;
+  if(diff<60) return 'now';
+  if(diff<3600) return Math.floor(diff/60)+'m';
+  if(diff<86400) return Math.floor(diff/3600)+'h';
+  if(diff<604800) return Math.floor(diff/86400)+'d';
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+/* ── load messages preview in panel ── */
+async function loadPanelMessages(){
+  if(!_user) return;
+  const body = document.getElementById('ppMsgBody');
+  body.innerHTML = '<div style="text-align:center;padding:20px;color:#9099AE;font-size:12px">Loading…</div>';
+
+  const uid = _user.id;
+  const { data: convs } = await supabase
+    .from('conversations')
+    .select('*')
+    .or(`participant_a.eq.${uid},participant_b.eq.${uid}`)
+    .order('last_message_at', { ascending: false })
+    .limit(6);
+
+  if(!convs || convs.length === 0){
+    body.innerHTML = '<div style="text-align:center;padding:24px 12px;color:#9099AE;font-size:12.5px"><p style="font-weight:600;color:#344260;margin-bottom:4px">No messages yet</p><p>Start a conversation by messaging a seller.</p></div>';
+    return;
+  }
+
+  const otherIds = [...new Set(convs.map(c => c.participant_a===uid?c.participant_b:c.participant_a))];
+  let profileMap = {};
+  if(otherIds.length){
+    const {data:profiles}=await supabase.from('user_profiles').select('id,full_name,avatar_url').in('id',otherIds);
+    (profiles||[]).forEach(p=>profileMap[p.id]=p);
+  }
+
+  // get unread per conversation
+  const convIds = convs.map(c=>c.id);
+  let unreadMap = {};
+  if(convIds.length){
+    const {data:unr}=await supabase.from('messages').select('conversation_id').in('conversation_id',convIds).eq('recipient_id',uid).eq('read',false);
+    (unr||[]).forEach(r=>{ unreadMap[r.conversation_id]=(unreadMap[r.conversation_id]||0)+1; });
+  }
+
+  body.innerHTML = convs.map(c=>{
+    const otherId = c.participant_a===uid?c.participant_b:c.participant_a;
+    const other = profileMap[otherId];
+    const name = other?.full_name||'Unknown';
+    const unread = unreadMap[c.id]||0;
+    const isMine = c.last_sender_id===uid;
+    const preview = (isMine?'You: ':'')+(c.last_message||'No messages');
+    return `<div class="pp-inbox-item" style="cursor:pointer" onclick="closeProfilePanel();window.location.href='chat.html?cid=${esc(c.id)}'">
+      <div class="pp-inbox-av">${other?.avatar_url?`<img src="${esc(other.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`<span>${esc(ini(name))}</span>`}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:1px">
+          <span style="font-size:13px;font-weight:${unread?'700':'600'};color:#0A1628;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(name)}</span>
+          ${c.listing_title?`<span style="font-size:10px;font-weight:600;color:#1845D1;background:#EAF0FF;padding:0 5px;border-radius:9999px;white-space:nowrap;overflow:hidden;max-width:80px;text-overflow:ellipsis">${esc(c.listing_title)}</span>`:''}
+        </div>
+        <div style="font-size:12px;color:${unread?'#344260':'#9099AE'};font-weight:${unread?'500':'400'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(preview)}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+        <span style="font-size:10.5px;color:#9099AE">${fmtTimeShort(c.last_message_at)}</span>
+        ${unread?`<span style="width:8px;height:8px;border-radius:50%;background:#1845D1;display:block"></span>`:''}
+      </div>
+    </div>`;
+  }).join('') + `<a href="inbox.html" style="display:block;text-align:center;padding:10px;font-size:12px;font-weight:600;color:#1845D1;border-top:1px solid #F0F2F8;text-decoration:none" onclick="closeProfilePanel()">Open Inbox</a>`;
+}
+
+/* ── load notifications preview in panel ── */
+async function loadPanelNotifications(){
+  if(!_user) return;
+  const body = document.getElementById('ppNotifBody');
+  body.innerHTML = '<div style="text-align:center;padding:20px;color:#9099AE;font-size:12px">Loading…</div>';
+
+  const { data: notifs } = await supabase
+    .from('notifications')
+    .select('*')
+    .eq('user_id', _user.id)
+    .order('created_at', { ascending: false })
+    .limit(6);
+
+  if(!notifs || notifs.length === 0){
+    body.innerHTML = '<div style="text-align:center;padding:24px 12px;color:#9099AE;font-size:12.5px"><p style="font-weight:600;color:#344260;margin-bottom:4px">No notifications</p><p>Activity from your listings will appear here.</p></div>';
+    return;
+  }
+
+  const typeIcon = {
+    message:'<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M14 10.67A2 2 0 0012.11 12H10a2 2 0 01-2-2V5a2 2 0 012-2h4a2 2 0 012 2v3.89z"/><path d="M6 4H4a2 2 0 00-2 2v5a2 2 0 002 2h.5l1.5 2 1.5-2H8a2 2 0 002-2v-1"/></svg>',
+    save:'<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 2h10a1 1 0 011 1v11l-6-3-6 3V3a1 1 0 011-1z"/></svg>',
+    sold:'<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 8l4 4 8-8"/></svg>',
+    default:'<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.5l2 2"/></svg>'
+  };
+
+  body.innerHTML = notifs.map(n=>{
+    const icon = typeIcon[n.type]||typeIcon.default;
+    const url = n.action_url||'notifications.html';
+    return `<div class="pp-notif-item${n.read?'':''}" style="cursor:pointer" onclick="handlePanelNotifClick('${esc(n.id)}','${esc(url)}',this)">
+      <div class="pp-notif-dot ${n.read?'read':'unread'}"></div>
+      <div class="pp-notif-text">
+        <span style="font-size:10.5px;color:${n.type==='message'?'#1845D1':n.type==='sold'?'#026B40':'#B45309'};background:${n.type==='message'?'#EAF0FF':n.type==='sold'?'#E3FAF0':'#FEF3C7'};padding:1px 5px;border-radius:9999px;font-weight:600;margin-right:4px">${icon}</span>
+        ${esc(n.title)}
+      </div>
+      <div class="pp-notif-time">${fmtTimeShort(n.created_at)}</div>
+    </div>`;
+  }).join('') + `<a href="notifications.html" style="display:block;text-align:center;padding:10px;font-size:12px;font-weight:600;color:#1845D1;border-top:1px solid #F0F2F8;text-decoration:none" onclick="closeProfilePanel()">View all notifications</a>`;
+}
+
+window.handlePanelNotifClick = async function(id, url, el){
+  await supabase.from('notifications').update({read:true}).eq('id',id);
+  const dot = el.querySelector('.pp-notif-dot');
+  if(dot){ dot.classList.remove('unread'); dot.classList.add('read'); }
+  closeProfilePanel();
+  if(url && url!=='#') window.location.href = url;
+};
+
+/* ══════════════════════════════════════
+   EDIT PROFILE
+══════════════════════════════════════ */
+window.ppPreviewAvatar = function(url){
+  const el = document.getElementById('ppEditAvPreview');
+  if(!el) return;
+  const name = _profile?.full_name || _user?.email?.split('@')[0] || '?';
+  if(url && url.startsWith('http')){
+    el.innerHTML = `<img src="${esc(url)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else {
+    el.textContent = ini(name);
+    el.style.background = 'linear-gradient(135deg,#1845D1,#2563EB)';
+    el.innerHTML = ini(name);
+  }
+};
+window.ppResizeTextarea = function(el){
+  el.style.height='auto'; el.style.height=el.scrollHeight+'px';
+};
+window.ppSaveEdit = async function(){
+  const btn = document.getElementById('ppEditSaveBtn');
+  const msg = document.getElementById('ppEditMsg');
+  if(!_user) return;
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  msg.style.display = 'none';
+
+  const full_name  = document.getElementById('ppEditName').value.trim();
+  const bio        = document.getElementById('ppEditBio').value.trim();
+  const company    = document.getElementById('ppEditCompany').value.trim();
+  const avatar_url = document.getElementById('ppEditAvUrl').value.trim();
+
+  const { error } = await supabase
+    .from('user_profiles')
+    .update({ full_name, bio, company, avatar_url })
+    .eq('id', _user.id);
+
+  btn.disabled = false;
+  btn.textContent = 'Save changes';
+
+  if(error){
+    msg.className='pp-msg error'; msg.style.display='block'; msg.textContent='Save failed: '+error.message;
+    return;
+  }
+  Object.assign(_profile, { full_name, bio, company, avatar_url });
+  renderHeaderAvatar(_profile);
+  renderPanelCard(_profile);
+  showPpSub(null);
+  ppShowToast('Profile updated successfully.', 'success');
+};
+
+/* ══════════════════════════════════════
+   CHANGE PASSWORD
+══════════════════════════════════════ */
+window.ppChangePassword = async function(){
+  const btn    = document.getElementById('ppPwBtn');
+  const msgEl  = document.getElementById('ppPwMsg');
+  const pw     = document.getElementById('ppPwNew').value;
+  const pwConf = document.getElementById('ppPwConfirm').value;
+
+  msgEl.style.display = 'none';
+  if(pw.length < 8){
+    msgEl.className='pp-msg error'; msgEl.style.display='block'; msgEl.textContent='Password must be at least 8 characters.'; return;
+  }
+  if(pw !== pwConf){
+    msgEl.className='pp-msg error'; msgEl.style.display='block'; msgEl.textContent='Passwords do not match.'; return;
+  }
+  btn.disabled=true; btn.textContent='Updating…';
+  const { error } = await supabase.auth.updateUser({ password: pw });
+  btn.disabled=false; btn.textContent='Update password';
+  if(error){
+    msgEl.className='pp-msg error'; msgEl.style.display='block'; msgEl.textContent=error.message; return;
+  }
+  document.getElementById('ppPwNew').value = '';
+  document.getElementById('ppPwConfirm').value = '';
+  msgEl.className='pp-msg success'; msgEl.style.display='block'; msgEl.textContent='Password updated!';
+  setTimeout(()=>{ msgEl.style.display='none'; showPpSub(null); }, 1800);
+  ppShowToast('Password changed.', 'success');
+};
+
+/* ══════════════════════════════════════
+   SETTINGS TOGGLES
+══════════════════════════════════════ */
+window.ppToggle = function(btn){
+  btn.classList.toggle('on');
+};
+
+/* ══════════════════════════════════════
+   HELP ACTIONS
+══════════════════════════════════════ */
+window.ppHelpAction = function(type){
+  const labels = { faq:'FAQ', report:'Report a Problem', 'seller-guide':'Seller Guide', contact:'Contact Support' };
+  ppShowToast((labels[type]||type)+' — coming soon', 'info');
+};
+
+/* ══════════════════════════════════════
+   MESSAGE SELLER
+══════════════════════════════════════ */
+let _msgSellerListingId   = null;
+let _msgSellerListingTitle= '';
+let _msgSellerName        = '';
+
+window.openMessageSeller = function(listingId, listingTitle, sellerName){
+  if(!_user){ window.location.href='login.html'; return; }
+  _msgSellerListingId    = listingId;
+  _msgSellerListingTitle = listingTitle;
+  _msgSellerName         = sellerName;
+
+  document.getElementById('msgSellerTitle').textContent = 'Message ' + sellerName;
+  document.getElementById('msgSellerSub').textContent   = listingTitle ? 'About: ' + listingTitle : '';
+  document.getElementById('msgSellerFeedback').style.display = 'none';
+  document.getElementById('msgSellerText').value = '';
+  document.getElementById('msgSellerSendBtn').disabled = false;
+  document.getElementById('msgSellerSendBtn').textContent = 'Send Message';
+
+  const overlay = document.getElementById('msgSellerOverlay');
+  overlay.style.opacity = '1';
+  overlay.style.pointerEvents = 'all';
+  document.getElementById('msgSellerBox').style.transform = 'scale(1) translateY(0)';
+  document.getElementById('msgSellerText').focus();
+};
+
+window.closeMsgSeller = function(){
+  const overlay = document.getElementById('msgSellerOverlay');
+  overlay.style.opacity = '0';
+  overlay.style.pointerEvents = 'none';
+  document.getElementById('msgSellerBox').style.transform = 'scale(.96) translateY(8px)';
+};
+
+window.sendMsgToSeller = async function(){
+  const text = document.getElementById('msgSellerText').value.trim();
+  if(!text) return;
+  if(!_user){ window.location.href='login.html'; return; }
+
+  const btn = document.getElementById('msgSellerSendBtn');
+  const fb  = document.getElementById('msgSellerFeedback');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  fb.style.display = 'none';
+
+  try {
+    // Find the seller's user account via the listings → sellers → user_profiles join
+    let recipientId = null;
+
+    // Resolve seller_id directly from the listings table
+    if(_msgSellerListingId){
+      const { data: listingRow } = await supabase
+        .from('listings')
+        .select('seller_id')
+        .eq('id', _msgSellerListingId)
+        .maybeSingle();
+
+      if(listingRow?.seller_id){
+        recipientId = listingRow.seller_id;
+      }
+    }
+
+    // Fallback: match by seller name in user_profiles
+    if(!recipientId && _msgSellerName){
+      const { data: profRow } = await supabase
+        .from('user_profiles')
+        .select('id')
+        .eq('full_name', _msgSellerName)
+        .maybeSingle();
+      if(profRow) recipientId = profRow.id;
+    }
+
+    if(!recipientId){
+      fb.style.cssText='display:block;background:#FFFBEB;color:#92400E;border:1px solid #FCD34D;font-size:12.5px;padding:8px 12px;border-radius:6px';
+      fb.textContent = 'This seller is not yet registered on the platform. Check back later.';
+      btn.disabled = false; btn.textContent = 'Send Message';
+      return;
+    }
+
+    if(recipientId === _user.id){
+      fb.style.cssText='display:block;background:#FFF0EE;color:#9D1B0D;border:1px solid #F5C0B8;font-size:12.5px;padding:8px 12px;border-radius:6px';
+      fb.textContent = 'You cannot message yourself.';
+      btn.disabled = false; btn.textContent = 'Send Message';
+      return;
+    }
+
+    // Create or find conversation
+    const listingTitle = _msgSellerListingTitle || '';
+    const filter = `and(participant_a.eq.${_user.id},participant_b.eq.${recipientId}),and(participant_a.eq.${recipientId},participant_b.eq.${_user.id})`;
+    const { data: existing } = await supabase.from('conversations').select('id').or(filter).order('created_at',{ascending:false}).limit(1).maybeSingle();
+
+    let convId = existing?.id;
+    if(!convId){
+      const { data: newConv } = await supabase.from('conversations').insert({
+        participant_a:   _user.id,
+        participant_b:   recipientId,
+        listing_id:      null,
+        listing_title:   listingTitle.slice(0,80),
+        last_message:    text.slice(0,120),
+        last_message_at: new Date().toISOString(),
+        last_sender_id:  _user.id
+      }).select('id').single();
+      convId = newConv?.id;
+    }
+
+    if(!convId) throw new Error('Could not create conversation');
+
+    await supabase.from('messages').insert({
+      conversation_id: convId,
+      sender_id:       _user.id,
+      recipient_id:    recipientId,
+      body:            text,
+      read:            false
+    });
+
+    await supabase.from('conversations').update({
+      last_message:    text.slice(0,120),
+      last_message_at: new Date().toISOString(),
+      last_sender_id:  _user.id
+    }).eq('id', convId);
+
+    const senderName = _profile?.full_name || _user.email?.split('@')[0] || 'Someone';
+    await supabase.from('notifications').insert({
+      user_id:    recipientId,
+      type:       'message',
+      title:      `New message from ${senderName}`,
+      body:       text.slice(0,80),
+      related_id: convId,
+      action_url: `chat.html?cid=${convId}`,
+      read:       false
+    });
+
+    fb.style.cssText='display:block;background:#E3FAF0;color:#026B40;border:1px solid #A8E8CA;font-size:12.5px;padding:8px 12px;border-radius:6px';
+    fb.textContent = 'Message sent!';
+    btn.textContent = 'View Conversation';
+    btn.disabled = false;
+    btn.onclick = function(){ closeMsgSeller(); window.location.href = 'chat.html?cid='+convId; };
+
+    // Update unread badge
+    renderPanelUnread(_user.id);
+
+  } catch(err){
+    console.error(err);
+    fb.style.cssText='display:block;background:#FFF0EE;color:#9D1B0D;border:1px solid #F5C0B8;font-size:12.5px;padding:8px 12px;border-radius:6px';
+    fb.textContent = 'Failed to send. Please try again.';
+    btn.disabled = false; btn.textContent = 'Send Message';
+  }
+};
+
+/* ══════════════════════════════════════
+   SIGN OUT
+══════════════════════════════════════ */
+window.handleSignOut = async function(){ await supabase.auth.signOut(); };
+window.ppSignOut = async function(){
+  closeProfilePanel();
+  await supabase.auth.signOut();
+  window.location.replace('login.html');
+};
+
+/* ══════════════════════════════════════
+   LOAD LISTINGS FROM DB
+══════════════════════════════════════ */
+(async function loadListings(){
+  try {
+    const { data, error } = await supabase
+      .from('listings')
+      .select('id,title,description,price,category,subcategory,condition,location,image_url,status,seller_id,created_at')
+      .eq('status', 'active')
+      .order('created_at', { ascending: false })
+      .limit(200);
+
+    if(error) throw error;
+
+    // Normalize into shape that renderListings/createCard expects
+    window.LISTINGS = (data || []).map(l => ({
+      id:          l.id,
+      title:       l.title || '',
+      description: l.description || '',
+      price:       l.price != null ? (Number(l.price) === 0 ? 'Free' : '$' + Number(l.price).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:2})) : '',
+      category:    l.category || '',
+      subcategory: l.subcategory || '',
+      condition:   l.condition || '',
+      location:    l.location || '',
+      image_url:   l.image_url || '',
+      status:      l.status || 'active',
+      seller_id:   l.seller_id || ''
+    }));
+
+    window._listingsLoaded = true;
+    if(typeof renderListings === 'function') renderListings();
+  } catch(err){
+    console.error('Failed to load listings:', err);
+    window._listingsLoaded = true;
+    if(typeof renderListings === 'function') renderListings();
+  }
+})();
 </script>
 </body>
 </html>
