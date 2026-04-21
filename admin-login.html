@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — UseTrueDeal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ffffff;
+  --bg-subtle: #F7F8FA;
+  --bg-muted: #F1F3F7;
+  --border: #E4E8F0;
+  --border-mid: #C8D0E0;
+  --text-primary: #0A1628;
+  --text-secondary: #344260;
+  --text-muted: #6B7A96;
+  --text-label: #9099AE;
+  --accent: #1845D1;
+  --accent-soft: #EAF0FF;
+  --accent-vivid: #2050E8;
+  --danger: #9D1B0D;
+  --danger-light: #FFF0EE;
+  --danger-border: #F5C0B8;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-full: 9999px;
+  --ease: cubic-bezier(0.4,0,0.2,1);
+  --ease-spring: cubic-bezier(0.22,1,0.36,1);
+  --t: 0.16s;
+  --t-slow: 0.28s;
+  --shadow-card: 0 0 0 1px rgba(10,22,40,0.06), 0 1px 3px rgba(10,22,40,0.07), 0 8px 24px rgba(10,22,40,0.05);
+  --shadow-input-focus: 0 0 0 3px rgba(24,69,209,0.14);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+  letter-spacing: 0.004em;
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-wrap {
+  width: 100%;
+  max-width: 380px;
+  animation: fadeIn 0.4s var(--ease-spring) both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.login-logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-lg);
+  background: var(--accent);
+  margin-bottom: 12px;
+}
+.login-logo-mark svg { color: #fff; }
+.login-logo-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+.login-logo-name span { color: var(--accent); }
+.login-logo-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.login-card {
+  background: var(--bg);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  padding: 28px;
+}
+.login-heading {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.012em;
+  margin-bottom: 4px;
+}
+.login-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.form-group { margin-bottom: 16px; }
+.form-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
+}
+.form-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: var(--r-md);
+  border: 1.5px solid var(--border-mid);
+  background: var(--bg);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--t) var(--ease), box-shadow var(--t) var(--ease);
+}
+.form-input:focus {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-input-focus);
+}
+.form-input::placeholder { color: var(--text-label); }
+
+.btn-submit {
+  width: 100%;
+  height: 42px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  border: none;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background var(--t) var(--ease), transform var(--t-slow) var(--ease-spring), opacity var(--t) var(--ease);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-submit:hover:not(:disabled) { background: var(--accent-vivid); transform: translateY(-1px); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.error-box {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--danger-light);
+  border: 1px solid var(--danger-border);
+  font-size: 13px;
+  color: var(--danger);
+  margin-bottom: 16px;
+}
+.error-box.visible { display: flex; }
+.error-box svg { flex-shrink: 0; }
+
+.login-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.login-footer a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+.login-footer a:hover { text-decoration: underline; }
+
+/* spinner */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+.btn-submit.loading .spinner { display: block; }
+.btn-submit.loading .btn-text { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<script>window.location.replace('login.html');</script>
+<div class="login-wrap">
+  <div class="login-logo">
+    <div class="login-logo-mark">
+      <!-- shield icon -->
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 2L4 5v5c0 4.4 3 8.5 7 9.5C15 18.5 18 14.4 18 10V5L11 2z"/>
+        <path d="M8 11l2 2 4-4"/>
+      </svg>
+    </div>
+    <div class="login-logo-name">Use<span>True</span>Deal</div>
+    <div class="login-logo-sub">Admin Portal</div>
+  </div>
+
+  <div class="login-card">
+    <div class="login-heading">Sign in to admin</div>
+    <div class="login-sub">Admin access only. Your role will be verified.</div>
+
+    <div class="error-box" id="errorBox">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="7" cy="7" r="6"/><path d="M7 4.5v3M7 9.5v.5"/></svg>
+      <span id="errorMsg">Invalid credentials.</span>
+    </div>
+
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label class="form-label" for="email">Email</label>
+        <input class="form-input" type="email" id="email" placeholder="admin@example.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input class="form-input" type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button class="btn-submit" type="submit" id="submitBtn">
+        <span class="btn-text">Sign in</span>
+        <span class="spinner"></span>
+      </button>
+    </form>
+  </div>
+
+  <div class="login-footer">
+    <a href="index.html">← Back to marketplace</a>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = 'https://qohwjeybvfajihljtxrx.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvaHdqZXlidmZhamlobGp0eHJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NjMyNDgsImV4cCI6MjA5MjEzOTI0OH0.YuueGczgwOOOORfcb43kW2CFkLWRK7SYURgfBXFASro';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  }
+});
+
+async function getRole(userId) {
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .select('role')
+    .eq('id', userId)
+    .maybeSingle();
+  if (error) console.error('getRole error:', error.message);
+  return data?.role ?? null;
+}
+
+function setLoading(on) {
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = on;
+  btn.classList.toggle('loading', on);
+}
+
+function showErr(msg) {
+  const box = document.getElementById('errorBox');
+  document.getElementById('errorMsg').textContent = msg;
+  box.classList.toggle('visible', !!msg);
+}
+
+// ── On mount: check existing session ──────────────────────────────────────
+// Use getSession() first (sync from localStorage), then confirm with server
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return; // no session, show the form
+
+  const role = await getRole(session.user.id);
+  if (role === 'admin')  { window.location.replace('admin.html'); return; }
+  if (role === 'seller') { window.location.replace('index.html'); return; } // sellers go home, not profile
+  if (role === 'user')   { window.location.replace('index.html'); return; }
+  // null (fetch failed / no profile): fall through and show form
+})();
+
+// ── Auth state change: fires after signInWithPassword resolves ─────────────
+// This is the authoritative redirect trigger — not the signIn() callback.
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event !== 'SIGNED_IN' || !session) return;
+  (async () => {
+    const role = await getRole(session.user.id);
+    if (role === 'admin') {
+      window.location.replace('admin.html');
+      return;
+    }
+    // Not admin: sign out and show appropriate error
+    await supabase.auth.signOut();
+    if (role === 'user' || role === 'seller') {
+      showErr('Access denied. This account does not have admin privileges.');
+    } else {
+      showErr('Could not verify your role. Please try again.');
+    }
+    setLoading(false);
+  })();
+});
+
+// ── Form submit ────────────────────────────────────────────────────────────
+window.handleLogin = async function(e) {
+  e.preventDefault();
+  showErr('');
+  setLoading(true);
+
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  if (!email || !password) {
+    showErr('Please enter your email and password.');
+    setLoading(false);
+    return;
+  }
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    // onAuthStateChange will NOT fire on error, so reset UI here
+    showErr(error.message);
+    setLoading(false);
+  }
+  // On success: onAuthStateChange fires → handles redirect
+};
+</script>
+</body>
+</html>
